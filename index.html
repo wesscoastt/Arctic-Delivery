@@ -398,7 +398,7 @@ const camera=new THREE.PerspectiveCamera(62,window.innerWidth/window.innerHeight
 const ambient=new THREE.AmbientLight(0x6080a0,.85);scene.add(ambient);
 const sun=new THREE.DirectionalLight(0xffe8cc,.88);sun.position.set(60,90,30);scene.add(sun);
 const hemi=new THREE.HemisphereLight(0x304560,0x1a2614,.45);scene.add(hemi);
-const moon=new THREE.DirectionalLight(0x8899bb,.0);moon.position.set(-50,80,-20);scene.add(moon);
+const moon={intensity:0,color:{setHex:()=>{}}}; // moon replaced with emissive sky
 
 // ── MATERIALS ────────────────────────────
 const fm=c=>new THREE.MeshPhongMaterial({color:c,flatShading:true,shininess:0});
@@ -562,10 +562,7 @@ addBldg(-320,-165,20,12, 8,0x48586a,'warehouse'); // Annex
         emissiveIntensity:1.2,flatShading:true}));
     lb.position.set(-327+i*2.0,9.0,-129.6);scene.add(lb);
   }
-  // Accent lights at sign base
-  [-330,-320,-310].forEach(lx=>{
-    const pl=new THREE.PointLight(0x4488ff,.6,18);pl.position.set(lx,7,-128);scene.add(pl);
-  });
+  // Accent lights removed to stay within iOS WebGL limits
   // Address sign pole
   const ap=new THREE.Mesh(new THREE.CylinderGeometry(.05,.05,2.4,4),
     new THREE.MeshPhongMaterial({color:0x303840,flatShading:true}));
@@ -668,14 +665,10 @@ addBldg(-320,-165,20,12, 8,0x48586a,'warehouse'); // Annex
     g.position.set(cx,0,cz);g.rotation.y=0;scene.add(g);
   });
 
-  // Lot lighting poles (4 tall lamp posts)
+  // Lot lighting poles (visual only, no PointLights)
   [[  -130,-115],[  -200,-115],[  -130,-160],[  -200,-160]].forEach(([px,pz])=>{
-    const pole=new THREE.Mesh(new THREE.CylinderGeometry(.07,.09,9,5),
-      new THREE.MeshPhongMaterial({color:0x2a3030,flatShading:true}));
+    const pole=new THREE.Mesh(new THREE.CylinderGeometry(.07,.09,9,5),fm(0x2a3030));
     pole.position.set(px,4.5,pz);scene.add(pole);
-    const arm=new THREE.Mesh(new THREE.BoxGeometry(3,.08,.08),
-      new THREE.MeshPhongMaterial({color:0x2a3030,flatShading:true}));
-    arm.position.set(px+1.5,9,pz);scene.add(arm);
     const lamp=new THREE.Mesh(new THREE.BoxGeometry(1.2,.3,.5),
       new THREE.MeshPhongMaterial({color:0x181808,emissive:new THREE.Color(0xffffaa),
         emissiveIntensity:.8,flatShading:true}));
@@ -1084,7 +1077,9 @@ function addTree(x,z,s){
 const slights=[];
 // 10 PointLights at key intersections
 [[0,0],[0,130],[0,265],[0,400],[-290,0],[80,0],[200,265],[-150,130],[-290,265],[200,400]].forEach(([x,z])=>{
-  const pl=new THREE.PointLight(0xffcc44,.7,40);pl.position.set(x+.4,6,z);scene.add(pl);slights.push(pl);});
+  // street lamp pointlight removed — emissive mesh only
+slights.push({intensity:.7});// stub for updTOD
+});
 function addSLight(x,z){
   if(onRoad(x,z,.5,.5,.25))return;
   const g=new THREE.Group();
@@ -1258,7 +1253,7 @@ ddata.forEach(d=>{
   pole.position.set(d.x,1.5,d.z);scene.add(pole);
   const top=new THREE.Mesh(new THREE.ConeGeometry(.5,.72,4),em(0xffee00,0xffff00,1.0));
   top.position.set(d.x,3.3,d.z);scene.add(top);
-  const pl=new THREE.PointLight(0xffcc00,.0,1);pl.position.set(d.x,2,d.z);scene.add(pl);
+  // delivery point light removed
   dmarkers.push({ring,pole,top,pl,data:d,done:false});
 });
 
@@ -1298,9 +1293,8 @@ const sp=new THREE.Mesh(new THREE.BoxGeometry(.08,.92,2.88),fm(0x0b2a8e));
 sp.position.set(-1.12,1.54,0);vanG.add(sp);
 const sp2=sp.clone();sp2.position.x=1.12;vanG.add(sp2);
 scene.add(vanG);
-const hlL=new THREE.SpotLight(0xfff5e0,0,40,Math.PI/8,.55);
-const hlR=new THREE.SpotLight(0xfff5e0,0,40,Math.PI/8,.55);
-scene.add(hlL);scene.add(hlL.target);scene.add(hlR);scene.add(hlR.target);
+// Headlights replaced with emissive meshes (saves 2 WebGL light slots)
+const hlL={intensity:0};const hlR={intensity:0};
 
 // ── PLAYER MESH ───────────────────────────
 const playerG=new THREE.Group();
@@ -1585,12 +1579,15 @@ function mkTrafficLight(x,z,rot){
   g.position.set(x,0,z);g.rotation.y=rot;scene.add(g);
   tLights.push({lights:lights3,phase:0,timer:5+Math.random()*3,pos:{x,z}});
 }
-// Traffic lights at intersection corners (±9 from each road center)
-// Each corner: arm points toward intersection center
-[[-9,-9,Math.PI/4],[9,-9,-Math.PI/4],[-9,9,3*Math.PI/4],[9,9,-3*Math.PI/4]].forEach(([ox,oz,r])=>{
-  mkTrafficLight(ox,oz,r);mkTrafficLight(ox+80,oz,r);
-  mkTrafficLight(ox,oz+130,r);mkTrafficLight(ox+80,oz+130,r);
-});
+// Traffic lights — only main downtown intersections (keep count low for iOS)
+mkTrafficLight(-9,-9,Math.PI/4);
+mkTrafficLight(9,-9,-Math.PI/4);
+mkTrafficLight(-9,9,3*Math.PI/4);
+mkTrafficLight(9,9,-3*Math.PI/4);
+mkTrafficLight(71,-9,Math.PI/4);
+mkTrafficLight(89,-9,-Math.PI/4);
+mkTrafficLight(71,9,3*Math.PI/4);
+mkTrafficLight(89,9,-3*Math.PI/4);
 function updTLights(dt){
   tLights.forEach(tl=>{
     tl.timer-=dt;
