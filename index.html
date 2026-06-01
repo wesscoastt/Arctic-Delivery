@@ -45,8 +45,7 @@ html,body{width:100%;height:100%;background:#060e1a;overflow:hidden}
   text-shadow:1px 1px 0 #000,0 0 8px rgba(40,180,80,.4)}
 #cc-day{font-size:7px;color:#606040;margin-top:3px;letter-spacing:2px}
 #cc-wx{font-size:7px;color:#505030;margin-top:1px;letter-spacing:1px}
-#cc-radio{font-size:7px;color:#806828;margin-top:3px;max-width:130px;
-  overflow:hidden;white-space:nowrap;text-overflow:ellipsis}
+
 
 /* ROUTE CARD — under radio */
 #rc{position:absolute;top:0;left:50%;transform:translateX(-50%);height:26px;width:auto;max-width:58%;min-width:260px;background:rgba(2,5,14,.92);border:1px solid rgba(30,55,95,.3);border-top:none;border-radius:0 0 6px 6px;display:flex;align-items:center;justify-content:center;gap:10px;padding:0 14px;pointer-events:none;opacity:0;transition:opacity .3s;z-index:5}
@@ -296,8 +295,6 @@ html,body{width:100%;height:100%;background:#060e1a;overflow:hidden}
     <div id="cc-earn">$0</div>
     <div id="cc-day">MON</div>
     <div id="cc-wx">CLEAR</div>
-    <div id="cc-radio">♪ —</div>
-
   </div>
   <div id="rc"><div id="rc-stop">STOP 0/12</div><div id="rc-addr">—</div><div id="rc-note"></div><div id="rc-gps"><span id="rc-arrow" style="font-size:14px;color:#ffcc22">↑</span><span id="rc-dist">—</span></div></div>
   <div id="spd-wrap"><div id="spd-val">0</div><div id="spd-unit">MPH</div></div>
@@ -1806,12 +1803,10 @@ function musStart(){if(!audioCtx||musRunning)return;musRunning=true;musStep=0;st
 function musStop(){musRunning=false;if(musTimer){clearTimeout(musTimer);musTimer=null;}}
 function musNextTrack(){
   musStop();musIdx=(musIdx+1)%MUSIC.length;
-  document.getElementById('cc-radio').textContent='♪ '+MUSIC[musIdx].n;
   showNotif('♪ '+MUSIC[musIdx].a+' — '+MUSIC[musIdx].n,2800,'info');
   if(audioCtx)setTimeout(()=>{musRunning=false;musStart();},120);
 }
 function updRadio(){
-  document.getElementById('cc-radio').textContent='♪ '+MUSIC[musIdx].n;
 }
 
 // ── DISPATCH / EVENTS ─────────────────────
