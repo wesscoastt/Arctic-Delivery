@@ -56,16 +56,18 @@ html,body{width:100%;height:100%;background:#060e1a;overflow:hidden}
   overflow:hidden;white-space:nowrap;text-overflow:ellipsis}
 
 /* ROUTE CARD — under radio */
-#rc{position:absolute;top:0;left:0;right:0;height:26px;
-  background:rgba(2,5,14,.88);border-bottom:1px solid rgba(30,55,95,.3);
-  display:flex;align-items:center;justify-content:center;gap:12px;
+#rc{position:absolute;top:0;left:50%;transform:translateX(-50%);height:26px;
+  width:auto;max-width:60%;min-width:280px;
+  background:rgba(2,5,14,.92);border:1px solid rgba(30,55,95,.3);border-top:none;
+  border-radius:0 0 6px 6px;
+  display:flex;align-items:center;justify-content:center;gap:10px;padding:0 14px;
   pointer-events:none;opacity:0;transition:opacity .3s;z-index:5}
 #rc-logo{display:none}
 #rc-stop{font-size:7px;color:#605020;letter-spacing:1px;white-space:nowrap}
 #rc-addr{font-size:10px;color:#ddaa30;letter-spacing:.5px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:200px}
 #rc-note{font-size:7px;color:#604820;font-style:italic;white-space:nowrap}
 #rc-gps{display:flex;align-items:center;gap:4px;font-size:8px;color:#806028}
-#rc-arrow{font-size:10px;color:#ccaa22;transition:transform .12s}
+#rc-arrow{font-size:16px;color:#ffcc22;transition:transform .3s;display:inline-block}
 
 /* SPEED — below radar */
 #spd-wrap{position:absolute;top:calc(140px + var(--st));left:calc(8px + var(--sl));
@@ -521,7 +523,7 @@ function addBldg(cx,cz,w,d,h,col,type){
 }
 function mkGasStation(cx,cz){
   addBldg(cx,cz,8,6,3.5,0xd0cfa8,'gas');
-  const cp=new THREE.Mesh(new THREE.BoxGeometry(16,.35,12),fm(0x701208));cp.position.set(cx,4.35,cz-7);scene.add(cp);
+  const cp=new THREE.Mesh(new THREE.BoxGeometry(14,.4,10),fm(0x601008));cp.position.set(cx,4.4,cz-6);scene.add(cp);
   [[cx-6,cz-3],[cx-6,cz-11],[cx+6,cz-3],[cx+6,cz-11]].forEach(([px,pz])=>{
     const pole=new THREE.Mesh(new THREE.CylinderGeometry(.1,.1,4.35,5),fm(0x1c1c1c));pole.position.set(px,2.17,pz);scene.add(pole);});
   [cx-3,cx+1.5].forEach(px=>{
@@ -534,39 +536,58 @@ addBldg(-320,-140,32,20,12,0x5a6a7a,'warehouse'); // ARCTIC HQ main
 addBldg(-320,-165,20,12, 8,0x48586a,'warehouse'); // Annex
 
 // ── ARCTIC HEADQUARTERS SIGN ────────────────────────────────────
-// Large sign on south face of main building (z=-130, facing south)
+// Large illuminated sign on south face of main building
 (function(){
-  // Sign backing board — wide dark panel
-  const back=new THREE.Mesh(new THREE.BoxGeometry(22,2.8,.25),
-    new THREE.MeshPhongMaterial({color:0x0a1420,flatShading:true,shininess:0}));
-  back.position.set(-320,9.5,-129.9);scene.add(back);
-  // Glowing "ARCTIC" text bar
-  const bar=new THREE.Mesh(new THREE.BoxGeometry(20,1.8,.1),
-    new THREE.MeshPhongMaterial({color:0x0a1828,emissive:new THREE.Color(0x1a6ac8),
-      emissiveIntensity:1.2,flatShading:true,shininess:0}));
-  bar.position.set(-320,9.5,-129.75);scene.add(bar);
-  // "ARCTIC HEADQUARTERS" — wider sign with two rows
-  // Row 1: ARCTIC (wide glowing letters)
-  for(let i=0;i<6;i++){
-    const lb=new THREE.Mesh(new THREE.BoxGeometry(1.1,1.3,.08),
-      new THREE.MeshPhongMaterial({color:0x0a1020,emissive:new THREE.Color(0x55aaff),emissiveIntensity:1.5,flatShading:true}));
-    lb.position.set(-323+i*2.5,10.0,-129.7);scene.add(lb);
-  }
-  // Row 2: HEADQUARTERS (smaller)
+  // Wide backing board
+  const back=new THREE.Mesh(new THREE.BoxGeometry(28,3.5,.3),
+    new THREE.MeshPhongMaterial({color:0x060e18,flatShading:true,shininess:0}));
+  back.position.set(-320,9.8,-129.85);scene.add(back);
+  // Blue glow panel behind text
+  const glow=new THREE.Mesh(new THREE.BoxGeometry(26,2.8,.12),
+    new THREE.MeshPhongMaterial({color:0x061020,emissive:new THREE.Color(0x0a3080),
+      emissiveIntensity:.8,flatShading:true}));
+  glow.position.set(-320,9.8,-129.7);scene.add(glow);
+  // "ARCTIC" — 6 wide bright letter blocks
+  const aLetters=[-10.5,-7.5,-4.5,-1.5,1.5,4.5];
+  aLetters.forEach(ox=>{
+    const lb=new THREE.Mesh(new THREE.BoxGeometry(1.8,1.6,.15),
+      new THREE.MeshPhongMaterial({color:0x0a1828,emissive:new THREE.Color(0x66bbff),
+        emissiveIntensity:1.6,flatShading:true}));
+    lb.position.set(-320+ox,10.4,-129.6);scene.add(lb);
+  });
+  // "HEADQUARTERS" — 12 smaller letter blocks
   for(let i=0;i<12;i++){
-    const lb2=new THREE.Mesh(new THREE.BoxGeometry(.7,.65,.06),
-      new THREE.MeshPhongMaterial({color:0x0a1020,emissive:new THREE.Color(0x3388cc),emissiveIntensity:1.1,flatShading:true}));
-    lb2.position.set(-325+i*1.8,8.8,-129.7);scene.add(lb2);
+    const lb=new THREE.Mesh(new THREE.BoxGeometry(1.2,.8,.1),
+      new THREE.MeshPhongMaterial({color:0x080e18,emissive:new THREE.Color(0x4488cc),
+        emissiveIntensity:1.2,flatShading:true}));
+    lb.position.set(-327+i*2.0,9.0,-129.6);scene.add(lb);
   }
-  // Sign accent lights
-  const sl1=new THREE.PointLight(0x88aaff,.8,20);sl1.position.set(-330,6,-128);scene.add(sl1);
-  const sl2=new THREE.PointLight(0x88aaff,.8,20);sl2.position.set(-310,6,-128);scene.add(sl2);
-  // Pole with ARCTIC HQ address number
-  const numPole=new THREE.Mesh(new THREE.CylinderGeometry(.05,.05,2.5,5),new THREE.MeshPhongMaterial({color:0x303840,flatShading:true}));
-  numPole.position.set(-302,-127,0);scene.add(numPole);
-  const numSign=new THREE.Mesh(new THREE.BoxGeometry(2.2,.55,.08),
-    new THREE.MeshPhongMaterial({color:0x0a1020,emissive:new THREE.Color(0xddeecc),emissiveIntensity:.6,flatShading:true}));
-  numSign.position.set(-302,1.4,-127);scene.add(numSign);
+  // Accent lights at sign base
+  [-330,-320,-310].forEach(lx=>{
+    const pl=new THREE.PointLight(0x4488ff,.6,18);pl.position.set(lx,7,-128);scene.add(pl);
+  });
+  // Address sign pole
+  const ap=new THREE.Mesh(new THREE.CylinderGeometry(.05,.05,2.4,4),
+    new THREE.MeshPhongMaterial({color:0x303840,flatShading:true}));
+  ap.position.set(-302,1.2,-127);scene.add(ap);
+  const as2=new THREE.Mesh(new THREE.BoxGeometry(2.4,.6,.08),
+    new THREE.MeshPhongMaterial({color:0x0a1020,emissive:new THREE.Color(0xddeedd),
+      emissiveIntensity:.6,flatShading:true}));
+  as2.position.set(-302,2.6,-127);scene.add(as2);
+})();
+
+// Signs on other HQ buildings in lot area
+(function(){
+  // East building sign
+  const s1=new THREE.Mesh(new THREE.BoxGeometry(10,1.2,.1),
+    new THREE.MeshPhongMaterial({color:0x060e14,emissive:new THREE.Color(0x2255aa),
+      emissiveIntensity:.9,flatShading:true}));
+  s1.position.set(-265,5.5,-131.5);scene.add(s1);
+  // Annex sign
+  const s2=new THREE.Mesh(new THREE.BoxGeometry(8,1,.1),
+    new THREE.MeshPhongMaterial({color:0x060e14,emissive:new THREE.Color(0x1a4488),
+      emissiveIntensity:.8,flatShading:true}));
+  s2.position.set(-320,5,-158.5);scene.add(s2);
 })();
 
 // ── ARCTIC HQ PARKING LOT ────────────────────────────────────────
@@ -1130,8 +1151,8 @@ function mkTCar(col){
 const TC_ROUTES=[
   {wps:[[-460,2.5],[-200,2.5],[0,2.5],[200,2.5],[460,2.5]],spd:9,col:0x2e4060},
   {wps:[[460,-2.5],[200,-2.5],[0,-2.5],[-200,-2.5],[-460,-2.5]],spd:8,col:0xa03020},
-  {wps:[[2.5,-130],[2.5,0],[2.5,130],[2.5,265],[2.5,400]],spd:7,col:0x406030},
-  {wps:[[-2.5,400],[-2.5,265],[-2.5,130],[-2.5,0],[-2.5,-100]],spd:7,col:0x706040},
+  {wps:[[2.5,-130],[2.5,0],[2.5,130],[2.5,265],[2.5,400]],spd:7,col:0x5a4a3a},
+  {wps:[[-2.5,400],[-2.5,265],[-2.5,130],[-2.5,0],[-2.5,-100]],spd:7,col:0x4a5a6a},
   {wps:[[-460,268],[0,268],[460,268]],spd:13,col:0x304060},
   {wps:[[460,262],[0,262],[-460,262]],spd:12,col:0x805030},
 ];
@@ -1555,19 +1576,21 @@ const tLights=[];
 function mkTrafficLight(x,z,rot){
   const g=new THREE.Group();
   const pole=new THREE.Mesh(new THREE.CylinderGeometry(.07,.07,5.5,5),fm(0x1a1a22));pole.position.y=2.75;g.add(pole);
-  const arm=new THREE.Mesh(new THREE.BoxGeometry(4,.1,.1),fm(0x1a1a22));arm.position.set(2,5.4,0);g.add(arm);
-  const hsg=new THREE.Mesh(new THREE.BoxGeometry(.6,1.6,.45),fm(0x111118));hsg.position.set(4,4.9,0);g.add(hsg);
+  const arm=new THREE.Mesh(new THREE.BoxGeometry(3.5,.1,.1),fm(0x1a1a22));arm.position.set(1.75,5.4,0);g.add(arm);
+  const hsg=new THREE.Mesh(new THREE.BoxGeometry(.55,1.5,.4),fm(0x111118));hsg.position.set(3.5,4.9,0);g.add(hsg);
   const lights3=[];
   [[0xcc0000,.8,.65],[0xcc8800,.0,.55],[0x00cc00,.0,.55]].forEach(([c,intensity,y],li)=>{
     const lm=new THREE.Mesh(new THREE.CircleGeometry(.2,8),em(Math.round(c*.25),c,intensity));
     lm.position.set(4,4.9+y-.55*li,.23);g.add(lm);lights3.push({mesh:lm,col:c,baseI:intensity});});
-  g.position.set(x,0,z);g.rotation.y=rot||0;scene.add(g);
-  tLights.push({lights:lights3,phase:0,timer:5+Math.random()*3});
+  g.position.set(x,0,z);g.rotation.y=rot;scene.add(g);
+  tLights.push({lights:lights3,phase:0,timer:5+Math.random()*3,pos:{x,z}});
 }
-// Downtown intersections
-[[0,-7,0],[0,7,Math.PI],[-7,0,Math.PI/2],[7,0,-Math.PI/2]].forEach(([ox,oz,r])=>{
+// Traffic lights at intersection corners (±9 from each road center)
+// Each corner: arm points toward intersection center
+[[-9,-9,Math.PI/4],[9,-9,-Math.PI/4],[-9,9,3*Math.PI/4],[9,9,-3*Math.PI/4]].forEach(([ox,oz,r])=>{
+  mkTrafficLight(ox,oz,r);mkTrafficLight(ox+80,oz,r);
   mkTrafficLight(ox,oz+130,r);mkTrafficLight(ox+80,oz+130,r);
-  mkTrafficLight(ox,oz,r);mkTrafficLight(ox+80,oz,r);});
+});
 function updTLights(dt){
   tLights.forEach(tl=>{
     tl.timer-=dt;
@@ -1996,49 +2019,76 @@ function drawMinimap(ctx,size,big){
   ctx.clearRect(0,0,size,size);
   ctx.save();
   ctx.beginPath();ctx.arc(R,R,R,0,Math.PI*2);ctx.clip();
-  ctx.fillStyle='#070c10';ctx.fillRect(0,0,size,size);
-  var viewR=120;
-  var cx=getPX(),cz=getPZ(),ang=inVan?van.ang:player.ang;
+  // Dark navy base
+  ctx.fillStyle='#070d12';ctx.fillRect(0,0,size,size);
+  
+  const viewR=130;
+  const cx=getPX(),cz=getPZ(),ang=inVan?van.ang:player.ang;
   var _co=Math.cos(-ang),_si=Math.sin(-ang);
   var wm=function(wx,wz){
     var dx=(wx-cx)/viewR*R,dz=(wz-cz)/viewR*R;
     return[R+dx*_co-dz*_si,R+dx*_si+dz*_co];
   };
+  
+  // Grass base color
+  ctx.fillStyle='#0e1a0e';ctx.fillRect(0,0,size,size);
+  
+  // Roads — thick, legible, color-coded
   roads.forEach(function(r){
-    var rw=Math.max(1.5,r.w/viewR*R*.9);
     var isEW=r.w>r.d;
+    var rw=Math.max(2,r.w/viewR*R*.9);
     var p0=isEW?wm(r.x-r.w/2,r.z):wm(r.x,r.z-r.d/2);
     var p1=isEW?wm(r.x+r.w/2,r.z):wm(r.x,r.z+r.d/2);
-    ctx.strokeStyle='rgba(65,75,58,.95)';ctx.lineWidth=rw+1;
+    // Road outline (darker)
+    ctx.strokeStyle=r.dirt?'rgba(90,70,45,.7)':'rgba(35,42,25,.9)';
+    ctx.lineWidth=rw+3;
     ctx.beginPath();ctx.moveTo(p0[0],p0[1]);ctx.lineTo(p1[0],p1[1]);ctx.stroke();
-    ctx.strokeStyle='rgba(90,105,78,.6)';ctx.lineWidth=rw*.4;ctx.stroke();
+    // Road surface (lighter)
+    ctx.strokeStyle=r.dirt?'rgba(110,88,55,.85)':'rgba(75,88,62,.95)';
+    ctx.lineWidth=rw;
+    ctx.beginPath();ctx.moveTo(p0[0],p0[1]);ctx.lineTo(p1[0],p1[1]);ctx.stroke();
+    // Road center line
+    ctx.strokeStyle=r.dirt?'rgba(0,0,0,0)':'rgba(52,62,42,.5)';
+    ctx.lineWidth=Math.max(.5,rw*.15);ctx.stroke();
   });
-  ctx.fillStyle='rgba(16,26,36,.8)';
+  
+  // Buildings — solid blocks with slight tint
+  ctx.fillStyle='rgba(22,32,45,.9)';
   bList.forEach(function(b){
     var p0=wm(b.minX,b.minZ);var p1=wm(b.maxX,b.maxZ);
-    ctx.fillRect(p0[0],p0[1],p1[0]-p0[0],p1[1]-p0[1]);
+    var bw=p1[0]-p0[0],bh=p1[1]-p0[1];
+    if(Math.abs(bw)>1&&Math.abs(bh)>1){ctx.fillRect(p0[0],p0[1],bw,bh);}
   });
+  
+  // Delivery blips
   dmarkers.forEach(function(dm,i){
     if(dm.done)return;
     var cur=i===curDel;
     var p=wm(dm.data.x,dm.data.z);
-    ctx.fillStyle=cur?'#ffee22':'rgba(200,148,20,.65)';
-    ctx.beginPath();ctx.arc(p[0],p[1],cur?4.5:2.5,0,Math.PI*2);ctx.fill();
-    if(cur){ctx.strokeStyle='rgba(255,230,30,.6)';ctx.lineWidth=1.2;ctx.stroke();}
+    // Outer glow for current
+    if(cur){
+      ctx.fillStyle='rgba(255,220,30,.25)';
+      ctx.beginPath();ctx.arc(p[0],p[1],8,0,Math.PI*2);ctx.fill();
+    }
+    ctx.fillStyle=cur?'#ffee22':'rgba(210,155,20,.85)';
+    ctx.beginPath();ctx.arc(p[0],p[1],cur?5:3,0,Math.PI*2);ctx.fill();
+    if(cur){ctx.strokeStyle='rgba(255,230,40,.9)';ctx.lineWidth=1.5;ctx.stroke();}
   });
-  ctx.fillStyle='#ffffff';
-  ctx.beginPath();ctx.moveTo(R,R-6);ctx.lineTo(R+4,R+4);ctx.lineTo(R-4,R+4);ctx.closePath();ctx.fill();
+  
+  // Player arrow at center — always pointing up
+  ctx.fillStyle='#55ddff';ctx.strokeStyle='#2288aa';ctx.lineWidth=1;
+  ctx.beginPath();ctx.moveTo(R,R-7);ctx.lineTo(R+4.5,R+4);ctx.lineTo(R-4.5,R+4);
+  ctx.closePath();ctx.fill();ctx.stroke();
+  
+  // Restore clip
   ctx.restore();
+  // Border ring
+  ctx.beginPath();ctx.arc(R,R,R-1.5,0,Math.PI*2);
+  ctx.strokeStyle='rgba(0,0,0,.8)';ctx.lineWidth=3;ctx.stroke();
   ctx.beginPath();ctx.arc(R,R,R-1,0,Math.PI*2);
-  ctx.strokeStyle='rgba(255,255,255,.06)';ctx.lineWidth=1.5;ctx.stroke();
-  ctx.beginPath();ctx.arc(R,R,R,0,Math.PI*2);
-  ctx.strokeStyle='rgba(0,0,0,.65)';ctx.lineWidth=2;ctx.stroke();
+  ctx.strokeStyle='rgba(80,100,70,.4)';ctx.lineWidth=1;ctx.stroke();
 }
 
-const bigMapCanvas=document.getElementById('bigmapcanvas');
-const bigMapCtx=bigMapCanvas.getContext('2d');
-const mmCanvas=document.getElementById('mmcanvas');
-const mmCtx=mmCanvas.getContext('2d');
 function bigMapDraw(){
   if(!mapOpen||!bigMapCtx)return;
   const cnv=document.getElementById('bigmapcanvas');
@@ -2292,55 +2342,96 @@ function closePause(){
   document.getElementById('pause').style.display='none';
 }
 function drawPauseMap(ctx,W,H){
-  ctx.fillStyle='#030608';ctx.fillRect(0,0,W,H);
-  // Grid lines
-  ctx.strokeStyle='rgba(15,30,50,.6)';ctx.lineWidth=.5;
-  for(let g=0;g<=12;g++){
-    const gx=g/12*W;ctx.beginPath();ctx.moveTo(gx,0);ctx.lineTo(gx,H);ctx.stroke();
-    const gz=g/12*H;ctx.beginPath();ctx.moveTo(0,gz);ctx.lineTo(W,gz);ctx.stroke();
+  // Dark base
+  ctx.fillStyle='#08100a';ctx.fillRect(0,0,W,H);
+  // Subtle grid
+  ctx.strokeStyle='rgba(20,35,20,.5)';ctx.lineWidth=.5;
+  for(var gi=0;gi<=16;gi++){
+    var gx=gi/16*W;ctx.beginPath();ctx.moveTo(gx,0);ctx.lineTo(gx,H);ctx.stroke();
+    var gz=gi/16*H;ctx.beginPath();ctx.moveTo(0,gz);ctx.lineTo(W,gz);ctx.stroke();
   }
-  const wx=x=>(x-WX0)/WXS*W, wz=z=>(z-WZ0)/WZS*H;
+  var wx=function(x){return(x-WX0)/WXS*W;};
+  var wz=function(z){return(z-WZ0)/WZS*H;};
+  
+  // Grass/terrain zones (colored by district type)
+  // Industrial/HQ zone
+  ctx.fillStyle='rgba(30,35,28,.6)';ctx.fillRect(wx(-440),wz(-190),wx(-200)-wx(-440),wz(-100)-wz(-190));
+  // Urban core
+  ctx.fillStyle='rgba(22,28,32,.4)';ctx.fillRect(wx(-220),wz(-60),wx(450)-wx(-220),wz(420)-wz(-60));
+  // Rural/farmland
+  ctx.fillStyle='rgba(18,30,14,.5)';ctx.fillRect(wx(200),wz(500),wx(490)-wx(200),wz(710)-wz(500));
+  
   // Roads
-  roads.forEach(r=>{
-    const rw=Math.max(1.5,r.w/WXS*W*1.1);
-    const isEW=r.w>r.d;
-    ctx.strokeStyle=r.dirt?'rgba(90,70,40,.7)':'rgba(55,68,48,.9)';ctx.lineWidth=rw+1;
+  roads.forEach(function(r){
+    var rw=Math.max(2,r.w/WXS*W*1.2);
+    var isEW=r.w>r.d;
+    ctx.strokeStyle=r.dirt?'rgba(100,80,50,.8)':'rgba(62,72,54,.95)';ctx.lineWidth=rw+2;
     ctx.beginPath();
     if(isEW){ctx.moveTo(wx(r.x-r.w/2),wz(r.z));ctx.lineTo(wx(r.x+r.w/2),wz(r.z));}
     else{ctx.moveTo(wx(r.x),wz(r.z-r.d/2));ctx.lineTo(wx(r.x),wz(r.z+r.d/2));}
     ctx.stroke();
-    ctx.strokeStyle=r.dirt?'rgba(110,88,55,.4)':'rgba(80,98,65,.4)';ctx.lineWidth=rw*.3;ctx.stroke();
+    ctx.strokeStyle=r.dirt?'rgba(120,98,65,.9)':'rgba(88,102,72,.95)';ctx.lineWidth=rw;ctx.stroke();
   });
+  
   // Buildings
-  ctx.fillStyle='rgba(16,26,40,.85)';
-  bList.forEach(b=>{
-    const bx=wx(b.minX),bz=wz(b.minZ),bw=wx(b.maxX)-bx,bd=wz(b.maxZ)-bz;
-    if(bw>1&&bd>1)ctx.fillRect(bx,bz,bw,bd);
+  ctx.fillStyle='rgba(18,28,40,.88)';ctx.strokeStyle='rgba(35,50,65,.5)';ctx.lineWidth=.5;
+  bList.forEach(function(b){
+    var bx=wx(b.minX),bz=wz(b.minZ),bw=wx(b.maxX)-bx,bd=wz(b.maxZ)-bz;
+    if(Math.abs(bw)>1&&Math.abs(bd)>1){ctx.fillRect(bx,bz,bw,bd);ctx.strokeRect(bx,bz,bw,bd);}
   });
-  // Delivery blips — numbered
-  dmarkers.forEach((dm,i)=>{
-    if(dm.done)return;
-    const cur=i===curDel;
-    const px=wx(dm.data.x),pz=wz(dm.data.z),pr=cur?7:4;
-    ctx.fillStyle=cur?'#ffee22':'rgba(180,120,15,.8)';
+  
+  // Delivery blips
+  ctx.textAlign='center';
+  dmarkers.forEach(function(dm,i){
+    if(dm.done){
+      var px=wx(dm.data.x),pz=wz(dm.data.z);
+      ctx.fillStyle='rgba(40,80,40,.5)';ctx.beginPath();ctx.arc(px,pz,4,0,Math.PI*2);ctx.fill();
+      ctx.fillStyle='rgba(60,120,60,.7)';ctx.font='7px monospace';ctx.fillText('✓',px,pz+2.5);
+      return;
+    }
+    var cur=i===curDel;
+    var px=wx(dm.data.x),pz=wz(dm.data.z),pr=cur?8:5;
+    if(cur){ctx.fillStyle='rgba(255,220,30,.2)';ctx.beginPath();ctx.arc(px,pz,14,0,Math.PI*2);ctx.fill();}
+    ctx.fillStyle=cur?'#ffee22':'rgba(200,145,20,.85)';
     ctx.beginPath();ctx.arc(px,pz,pr,0,Math.PI*2);ctx.fill();
-    if(cur){ctx.strokeStyle='rgba(255,220,30,.7)';ctx.lineWidth=2;ctx.stroke();}
-    ctx.fillStyle=cur?'#111':'#333';ctx.font=(cur?'8':'6')+'px monospace';
-    ctx.textAlign='center';ctx.fillText(i+1,px,pz+(cur?3:2));
+    if(cur){ctx.strokeStyle='rgba(255,230,40,.9)';ctx.lineWidth=2;ctx.stroke();}
+    ctx.fillStyle=cur?'#111':'#222';
+    ctx.font=(cur?'8':'6')+'px monospace';ctx.fillText(i+1,px,pz+(cur?3:2));
   });
-  // Van blip — white arrow
-  const vx2=wx(van.x),vz2=wz(van.z);
+  
+  // Van marker
+  var vx2=wx(van.x),vz2=wz(van.z);
   ctx.save();ctx.translate(vx2,vz2);ctx.rotate(-van.ang+Math.PI);
-  ctx.fillStyle='#44ddff';ctx.strokeStyle='#226688';ctx.lineWidth=1;
-  ctx.beginPath();ctx.moveTo(0,-9);ctx.lineTo(5,5);ctx.lineTo(-5,5);ctx.closePath();
+  ctx.fillStyle='#44ddff';ctx.strokeStyle='#1a7799';ctx.lineWidth=1.5;
+  ctx.beginPath();ctx.moveTo(0,-10);ctx.lineTo(6,6);ctx.lineTo(-6,6);ctx.closePath();
   ctx.fill();ctx.stroke();ctx.restore();
-  // District labels
-  ctx.textAlign='center';ctx.fillStyle='rgba(55,90,130,.8)';ctx.font='8px Courier New';
-  [['HQ',-320,-140],['DTWN',10,90],['OLD TOWN',-165,195],['SHOP',-340,195],
-   ['E.SUB',265,110],['W.SUB',-185,90],['UNIV',30,380],['APTS',193,350],
-   ['HWY',0,265],['RURAL',355,455],['FARM',370,650],['HARBOR',-395,90]
-  ].forEach(([n,x,z])=>ctx.fillText(n,wx(x),wz(z)));
+  
+  // District / area labels
+  ctx.textAlign='center';
+  [
+    ['ARCTIC HQ',-325,-152,'rgba(120,180,220,.8)',10,true],
+    ['DOWNTOWN',10,80,'rgba(255,220,100,.75)',9,true],
+    ['OLD TOWN',-165,195,'rgba(200,180,140,.7)',8,false],
+    ['SHOPPING',-340,200,'rgba(180,160,220,.7)',8,false],
+    ['E. SUBURBS',275,110,'rgba(180,220,150,.7)',8,false],
+    ['W. SUBURBS',-185,85,'rgba(180,220,150,.7)',8,false],
+    ['UNIVERSITY',30,385,'rgba(180,200,255,.7)',8,false],
+    ['APARTMENTS',198,355,'rgba(200,180,255,.7)',8,false],
+    ['N. HIGHWAY',0,265,'rgba(200,200,160,.6)',7,false],
+    ['TRAILER PARK',-315,468,'rgba(180,160,130,.6)',7,false],
+    ['RURAL TOWN',360,460,'rgba(180,220,150,.65)',7,false],
+    ['FARMLAND',380,640,'rgba(150,200,100,.65)',7,false],
+    ['FOREST',-385,640,'rgba(80,160,80,.7)',7,false],
+    ['HARBOR',-400,90,'rgba(100,160,220,.7)',8,false],
+    ['TRAIN STN',18,345,'rgba(200,180,140,.65)',7,false],
+  ].forEach(function(item){
+    var n=item[0],x=item[1],z=item[2],col=item[3],sz=item[4],bold=item[5];
+    ctx.fillStyle=col;
+    ctx.font=(bold?'bold ':'')+sz+'px Courier New';
+    ctx.fillText(n,wx(x),wz(z));
+  });
 }
+
 
 
 // Save/Load using localStorage
