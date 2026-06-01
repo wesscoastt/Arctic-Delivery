@@ -4,6 +4,13 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
 <title>ARCTIC Delivery Co.</title>
+<link rel="manifest" href="manifest.json">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="ARCTIC">
+<link rel="apple-touch-icon" href="icon.png">
+<meta name="theme-color" content="#08101e">
+
 <style>
 :root{
   --sl:env(safe-area-inset-left,0px);--sr:env(safe-area-inset-right,0px);
@@ -350,11 +357,11 @@ renderer.toneMapping=THREE.ACESFilmicToneMapping;
 renderer.toneMappingExposure=0.92;
 
 const scene=new THREE.Scene();
-scene.fog=new THREE.Fog(0x8ab0c8,80,220);
+scene.fog=new THREE.Fog(0x8ab0c8,120,380);
 const camera=new THREE.PerspectiveCamera(62,window.innerWidth/window.innerHeight,.1,480);
 
 // ── LIGHTS ───────────────────────────────
-const ambient=new THREE.AmbientLight(0x304060,.70);scene.add(ambient);
+const ambient=new THREE.AmbientLight(0x6080a0,.85);scene.add(ambient);
 const sun=new THREE.DirectionalLight(0xffe8cc,.88);sun.position.set(60,90,30);scene.add(sun);
 const hemi=new THREE.HemisphereLight(0x304560,0x1a2614,.45);scene.add(hemi);
 const moon=new THREE.DirectionalLight(0x8899bb,.0);moon.position.set(-50,80,-20);scene.add(moon);
@@ -1203,7 +1210,7 @@ ddata.forEach(d=>{
 });
 
 // ── VAN MESH ─────────────────────────────
-const vanG=new THREE.Group();vanG.position.set(-80,0,-2);vanG.rotation.y=0;
+const vanG=new THREE.Group();vanG.position.set(-280,0,-130);vanG.rotation.y=Math.PI/2;
 const cargo=new THREE.Mesh(new THREE.BoxGeometry(2.2,2.1,4.4),fm(0xd5e2ec));
 cargo.position.y=1.54;vanG.add(cargo);
 const stripe=new THREE.Mesh(new THREE.BoxGeometry(2.21,.42,4.35),fm(0x0b2a8e));
@@ -1255,7 +1262,7 @@ playerG.visible=false;scene.add(playerG);
 // ── VAN PHYSICS ───────────────────────────
 let inVan=true;
 const van={
-  x:-80,z:-2,ang:0,spd:0,
+  x:-280,z:-130,ang:Math.PI/2,spd:0,
   maxFwd:14,maxRev:4.2,accel:6.2,friction:4.5,turn:1.42,
   hw:1.12,hd:2.08,lightsOn:false,wetFric:0,
 
@@ -1289,7 +1296,7 @@ const van={
 
 // ── PLAYER PHYSICS ───────────────────────
 const player={
-  x:-80,z:-2,ang:0,spd:0,maxSpd:1.4,accel:9,friction:12,hw:.26,hd:.26,bob:0,
+  x:-280,z:-130,ang:Math.PI/2,spd:0,maxSpd:1.4,accel:9,friction:12,hw:.26,hd:.26,bob:0,
   update(dt,keys){
     if(inVan)return;
     const thr=(keys.w||keys.ArrowUp)?1:(keys.s||keys.ArrowDown)?-1:0;
@@ -1312,7 +1319,7 @@ const player={
 };
 
 // ── CAMERA ───────────────────────────────
-let camX=-80,camY=6,camZ=-12,camMode=0;
+let camX=-272,camY=4,camZ=-122,camMode=0;
 function updateCamera(){
   let tx,tz,ty;
   if(!inVan){tx=player.x-Math.sin(player.ang)*7;tz=player.z-Math.cos(player.ang)*7;ty=4.5;}
@@ -1324,9 +1331,9 @@ function updateCamera(){
   camX=lerp(camX,tx,.055);camY=lerp(camY,ty,.07);camZ=lerp(camZ,tz,.055);
   camera.position.set(camX,camY,camZ);
   const lx=inVan?van.x:player.x,lz=inVan?van.z:player.z;
-  const laX=inVan&&camMode===0?lx+Math.sin(van.ang)*4:lx;
-  const laZ=inVan&&camMode===0?lz+Math.cos(van.ang)*4:lz;
-  camera.lookAt(laX,!inVan?0.9:(camMode===1?2.1:0.8),laZ);
+  const laX=inVan&&camMode===0?lx+Math.sin(van.ang)*5:lx;
+  const laZ=inVan&&camMode===0?lz+Math.cos(van.ang)*5:lz;
+  camera.lookAt(laX,!inVan?0.9:(camMode===1?2.1:0.5),laZ);
   const fwd={x:Math.sin(van.ang),z:Math.cos(van.ang)},rgt={x:Math.cos(van.ang),z:-Math.sin(van.ang)};
   hlL.position.set(van.x-rgt.x*.68,1.22,van.z-rgt.z*.68);
   hlL.target.position.set(van.x+fwd.x*22-rgt.x*.68,0,van.z+fwd.z*22-rgt.z*.68);
@@ -2317,6 +2324,10 @@ function loop(ts){
 renderer.setSize(window.innerWidth,window.innerHeight);
 camera.aspect=window.innerWidth/window.innerHeight||1.6;
 camera.updateProjectionMatrix();
+// Set correct sky/fog color immediately based on starting time of day
+updTOD(0);
+// Force one render frame so the canvas isn't black on load
+renderer.render(scene,camera);
 requestAnimationFrame(loop);
   if(paused){last=ts;return;}
   const dt=Math.min((ts-last)/1000,.05);last=ts;
