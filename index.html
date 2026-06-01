@@ -56,19 +56,16 @@ html,body{width:100%;height:100%;background:#060e1a;overflow:hidden}
   overflow:hidden;white-space:nowrap;text-overflow:ellipsis}
 
 /* ROUTE CARD — under radio */
-#rc{display:block;margin-top:5px;pointer-events:none;opacity:0;transition:opacity .3s}
+#rc{position:absolute;top:0;left:0;right:0;height:26px;
+  background:rgba(2,5,14,.88);border-bottom:1px solid rgba(30,55,95,.3);
+  display:flex;align-items:center;justify-content:center;gap:12px;
+  pointer-events:none;opacity:0;transition:opacity .3s;z-index:5}
 #rc-logo{display:none}
-#rc-stop{font-size:6px;color:#503810;letter-spacing:1px;
-  border-top:1px solid rgba(80,60,10,.3);padding-top:3px;margin-top:3px}
-#rc-addr{font-size:7px;color:#c8a040;margin-top:1px;line-height:1.2;
-  text-shadow:1px 1px 3px rgba(0,0,0,.9)}
-#rc-note{font-size:6px;color:#604820;margin-top:0;font-style:italic;
-  white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
-  max-width:130px;text-align:right;margin-left:auto}
-#rc-gps{display:flex;align-items:center;gap:4px;margin-top:1px;
-  justify-content:flex-end;font-size:6px;color:#705028;
-  text-shadow:1px 1px 2px rgba(0,0,0,.9)}
-#rc-arrow{font-size:9px;color:#ccaa22;transition:transform .12s;line-height:1;flex-shrink:0}
+#rc-stop{font-size:7px;color:#605020;letter-spacing:1px;white-space:nowrap}
+#rc-addr{font-size:10px;color:#ddaa30;letter-spacing:.5px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:200px}
+#rc-note{font-size:7px;color:#604820;font-style:italic;white-space:nowrap}
+#rc-gps{display:flex;align-items:center;gap:4px;font-size:8px;color:#806028}
+#rc-arrow{font-size:10px;color:#ccaa22;transition:transform .12s}
 
 /* SPEED — below radar */
 #spd-wrap{position:absolute;top:calc(140px + var(--st));left:calc(8px + var(--sl));
@@ -222,6 +219,29 @@ html,body{width:100%;height:100%;background:#060e1a;overflow:hidden}
 #save-toast{font-size:7px;color:#44ee88;letter-spacing:1px;text-align:center;
   opacity:0;transition:opacity .3s;height:14px}
 
+
+
+/* ITINERARY OVERLAY */
+#itinoverlay{position:absolute;inset:0;background:rgba(0,0,0,.92);z-index:160;display:none;
+  flex-direction:column;pointer-events:auto;font-family:'Courier New',monospace}
+#itin-header{display:flex;justify-content:space-between;align-items:center;
+  padding:10px 16px;border-bottom:1px solid rgba(30,55,95,.35);flex-shrink:0}
+#itin-title{font-size:10px;color:#4a7090;letter-spacing:3px}
+#itin-close{font-size:20px;color:#2e4560;background:none;border:none;
+  font-family:inherit;cursor:pointer;padding:2px 10px;-webkit-tap-highlight-color:transparent}
+#itin-list{flex:1;overflow-y:auto;padding:8px 0}
+.itin-stop{display:flex;align-items:center;gap:12px;padding:10px 16px;
+  border-bottom:1px solid rgba(20,35,60,.4);cursor:default}
+.itin-stop.itin-done{opacity:.35}
+.itin-stop.itin-cur{background:rgba(20,50,20,.4);border-left:3px solid #44ee88;padding-left:13px}
+.itin-num{font-size:9px;color:#2e4560;width:18px;text-align:right;flex-shrink:0}
+.itin-icon{font-size:18px;flex-shrink:0;width:24px}
+.itin-info{flex:1;min-width:0}
+.itin-addr{font-size:10px;color:#8aaa88;letter-spacing:.3px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.itin-stop.itin-cur .itin-addr{color:#aaccaa;font-size:11px}
+.itin-type{font-size:8px;color:#3a5560;margin-top:1px;letter-spacing:.5px}
+.itin-dist{font-size:8px;color:#3a5048;flex-shrink:0;text-align:right}
+.itin-check{font-size:14px;color:#336633;flex-shrink:0}
 </style>
 </head>
 <body>
@@ -292,12 +312,24 @@ html,body{width:100%;height:100%;background:#060e1a;overflow:hidden}
     <div id="cc-day">MON</div>
     <div id="cc-wx">CLEAR</div>
     <div id="cc-radio">♪ —</div>
-    <div id="rc">
-      <div id="rc-stop">STOP 0/12</div>
-      <div id="rc-addr">—</div>
-      <div id="rc-note"></div>
-      <div id="rc-gps"><span id="rc-arrow">↑</span><span id="rc-dist">— mi</span></div>
+
+  </div>
+
+  <!-- ITINERARY OVERLAY -->
+  <div id="itinoverlay">
+    <div id="itin-header">
+      <div id="itin-title">◈ ROUTE ITINERARY</div>
+      <button id="itin-close">✕</button>
     </div>
+    <div id="itin-list"></div>
+  </div>
+
+  <!-- ROUTE CARD — top center -->
+  <div id="rc">
+    <div id="rc-stop">STOP 0/12</div>
+    <div id="rc-addr">—</div>
+    <div id="rc-note"></div>
+    <div id="rc-gps"><span id="rc-arrow">↑</span><span id="rc-dist">— mi</span></div>
   </div>
   <div id="spd-wrap"><div id="spd-val">0</div><div id="spd-unit">MPH</div></div>
   <div id="hint"></div>
@@ -325,8 +357,8 @@ html,body{width:100%;height:100%;background:#060e1a;overflow:hidden}
     <div class="arow">
       <button class="ab ab-sm" id="btn-cam">CAM</button>
       <button class="ab ab-sm" id="btn-light">◎ LT</button>
-      <button class="ab ab-sm" id="btn-map">MAP</button>
-      <button class="ab ab-sm" id="btn-pause">❙❙</button>
+      <button class="ab ab-sm" id="btn-itin">ROUTE</button>
+      <button class="ab ab-sm" id="btn-pause-action">❙❙</button>
     </div>
     <button class="ab" id="btn-exit">[ F ] EXIT VAN</button>
     <button class="ab" id="btn-deliver">[ E ] DELIVER</button>
@@ -501,7 +533,7 @@ function mkGasStation(cx,cz){
 addBldg(-320,-140,32,20,12,0x5a6a7a,'warehouse'); // ARCTIC HQ main
 addBldg(-320,-165,20,12, 8,0x48586a,'warehouse'); // Annex
 
-// ── ARCTIC HQ SIGN ──────────────────────────────────────────────
+// ── ARCTIC HEADQUARTERS SIGN ────────────────────────────────────
 // Large sign on south face of main building (z=-130, facing south)
 (function(){
   // Sign backing board — wide dark panel
@@ -513,19 +545,19 @@ addBldg(-320,-165,20,12, 8,0x48586a,'warehouse'); // Annex
     new THREE.MeshPhongMaterial({color:0x0a1828,emissive:new THREE.Color(0x1a6ac8),
       emissiveIntensity:1.2,flatShading:true,shininess:0}));
   bar.position.set(-320,9.5,-129.75);scene.add(bar);
-  // Letter blocks spelling ARCTIC (6 blocks)
-  const letters=[[-8.5,0,'A'],[-5.5,0,'R'],[-2.5,0,'C'],[.5,0,'T'],[3.5,0,'I'],[6.5,0,'C']];
-  letters.forEach(([ox])=>{
-    const lb=new THREE.Mesh(new THREE.BoxGeometry(.9,1.2,.08),
-      new THREE.MeshPhongMaterial({color:0x0a1020,emissive:new THREE.Color(0x55aaff),
-        emissiveIntensity:1.4,flatShading:true}));
-    lb.position.set(-320+ox,9.5,-129.7);scene.add(lb);
-  });
-  // "DELIVERY CO." smaller bar below
-  const sub=new THREE.Mesh(new THREE.BoxGeometry(14,.7,.1),
-    new THREE.MeshPhongMaterial({color:0x0a1020,emissive:new THREE.Color(0x2244aa),
-      emissiveIntensity:.9,flatShading:true}));
-  sub.position.set(-320,8.2,-129.7);scene.add(sub);
+  // "ARCTIC HEADQUARTERS" — wider sign with two rows
+  // Row 1: ARCTIC (wide glowing letters)
+  for(let i=0;i<6;i++){
+    const lb=new THREE.Mesh(new THREE.BoxGeometry(1.1,1.3,.08),
+      new THREE.MeshPhongMaterial({color:0x0a1020,emissive:new THREE.Color(0x55aaff),emissiveIntensity:1.5,flatShading:true}));
+    lb.position.set(-323+i*2.5,10.0,-129.7);scene.add(lb);
+  }
+  // Row 2: HEADQUARTERS (smaller)
+  for(let i=0;i<12;i++){
+    const lb2=new THREE.Mesh(new THREE.BoxGeometry(.7,.65,.06),
+      new THREE.MeshPhongMaterial({color:0x0a1020,emissive:new THREE.Color(0x3388cc),emissiveIntensity:1.1,flatShading:true}));
+    lb2.position.set(-325+i*1.8,8.8,-129.7);scene.add(lb2);
+  }
   // Sign accent lights
   const sl1=new THREE.PointLight(0x88aaff,.8,20);sl1.position.set(-330,6,-128);scene.add(sl1);
   const sl2=new THREE.PointLight(0x88aaff,.8,20);sl2.position.set(-310,6,-128);scene.add(sl2);
@@ -2007,7 +2039,11 @@ const bigMapCanvas=document.getElementById('bigmapcanvas');
 const bigMapCtx=bigMapCanvas.getContext('2d');
 const mmCanvas=document.getElementById('mmcanvas');
 const mmCtx=mmCanvas.getContext('2d');
-function bigMapDraw(){if(mapOpen)drawMinimap(bigMapCtx,520,true,mpX,mpY,mZoom);}
+function bigMapDraw(){
+  if(!mapOpen||!bigMapCtx)return;
+  const cnv=document.getElementById('bigmapcanvas');
+  drawPauseMap(bigMapCtx,cnv.width,cnv.height);
+}
 bigMapCanvas.addEventListener('mousedown',e=>{mDrag=true;mDx=e.clientX;mDy=e.clientY;mPx=mpX;mPy=mpY;});
 bigMapCanvas.addEventListener('mousemove',e=>{if(!mDrag)return;mpX=mPx+(e.clientX-mDx);mpY=mPy+(e.clientY-mDy);bigMapDraw();});
 bigMapCanvas.addEventListener('mouseup',()=>mDrag=false);
@@ -2029,7 +2065,13 @@ function toggleMap(){
   mapOpen=!mapOpen;mpX=0;mpY=0;mZoom=1;
   const ov=document.getElementById('mapoverlay');
   ov.style.display=mapOpen?'flex':'none';
-  if(mapOpen)bigMapDraw();
+  if(mapOpen){
+    const cnv=document.getElementById('bigmapcanvas');
+    cnv.width=Math.min(window.innerWidth-20, 800);
+    cnv.height=Math.min(window.innerHeight-80, 520);
+    bigMapCtx=cnv.getContext('2d');
+    bigMapDraw();
+  }
 }
 document.getElementById('mapoverlay').addEventListener('click',function(e){
   if(e.target===this||e.target.id==='map-close')toggleMap();
@@ -2119,7 +2161,8 @@ mBtn('btn-deliver',()=>{if(!audioCtx)initAudio();if(shiftActive&&nearDel()&&!del
 mBtn('btn-exit',()=>{if(!audioCtx)initAudio();doExitVan();});
 mBtn('btn-cam',()=>{if(inVan){camMode=(camMode+1)%3;showNotif(['Follow','Hood','Wide'][camMode],900,'info');}});
 mBtn('btn-light',()=>{van.lightsOn=!van.lightsOn;hlL.intensity=van.lightsOn?1.6:0;hlR.intensity=van.lightsOn?1.6:0;showNotif(van.lightsOn?'◎ Lights ON':'◎ Lights OFF',1100,'info');});
-mBtn('btn-map',()=>toggleMap());
+mBtn('btn-itin',()=>toggleItinerary());
+mBtn('btn-pause-action',()=>{paused?closePause():openPause();});
 
 document.getElementById('startbtn').addEventListener('click',showLoadout);
 document.getElementById('newshift').addEventListener('click',()=>{document.getElementById('done').style.display='none';initLoadout();document.getElementById('loadout').style.display='flex';document.getElementById('loadout').style.opacity='1';});
@@ -2185,6 +2228,43 @@ window.addEventListener('resize',()=>{
 checkOrientation();
 
 
+
+// ── ITINERARY OVERLAY ──────────────────────────────────────────
+let itinOpen=false;
+const TYPE_LABELS={house:'Residential House',apartment:'Apartment Complex',
+  business:'Commercial Business',locker:'Package Locker',
+  gated:'Gated Community',mailbox:'Curbside Mailbox',rural:'Rural Address'};
+function toggleItinerary(){
+  itinOpen=!itinOpen;
+  const el=document.getElementById('itinoverlay');
+  el.style.display=itinOpen?'flex':'none';
+  if(itinOpen) buildItinerary();
+}
+function buildItinerary(){
+  const list=document.getElementById('itin-list');
+  list.innerHTML='';
+  ddata.forEach((stop,i)=>{
+    const dm=dmarkers[i];
+    const done=dm&&dm.done;
+    const cur=i===curDel&&!done;
+    const cfg=DEL_CFG[stop.type]||DEL_CFG.house;
+    const dist=dst(getPX(),getPZ(),stop.x,stop.z);
+    const row=document.createElement('div');
+    row.className='itin-stop'+(done?' itin-done':'')+(cur?' itin-cur':'');
+    row.innerHTML=
+      '<span class="itin-num">'+(i+1)+'</span>'+
+      '<span class="itin-icon">'+cfg.icon+'</span>'+
+      '<div class="itin-info">'+
+        '<div class="itin-addr">'+stop.addr+'</div>'+
+        '<div class="itin-type">'+(TYPE_LABELS[stop.type]||stop.type)+' · '+stop.name+'</div>'+
+      '</div>'+
+      '<span class="itin-dist">'+(done?'':'→ '+Math.round(dist*0.3)+'mi')+'</span>'+
+      '<span class="itin-check">'+(done?'✓':'')+'</span>';
+    list.appendChild(row);
+  });
+}
+document.getElementById('itin-close').addEventListener('click',()=>{itinOpen=false;document.getElementById('itinoverlay').style.display='none';});
+
 // ── PAUSE MENU ───────────────────────────────────────────────────
 let paused=false;
 let pauseMapCtx=null;
@@ -2198,71 +2278,70 @@ function openPause(){
   document.getElementById('ps-stops').textContent=delivered+'/'+ddata.length+' stops';
   document.getElementById('ps-earn').textContent='$'+earnings+' earned';
   document.getElementById('ps-time').textContent=getTStr();
-  // Draw full map
+  // Draw full map — use container size
   const cnv=document.getElementById('pause-mapcanvas');
-  const W=cnv.offsetWidth||300,H=cnv.offsetHeight||400;
-  cnv.width=W;cnv.height=H;
+  const pmDiv=document.getElementById('pause-map');
+  const W=pmDiv.offsetWidth||window.innerWidth-180;
+  const H=pmDiv.offsetHeight||window.innerHeight-50;
+  cnv.width=Math.max(W,200);cnv.height=Math.max(H,200);
   pauseMapCtx=cnv.getContext('2d');
-  drawPauseMap(pauseMapCtx,W,H);
+  drawPauseMap(pauseMapCtx,cnv.width,cnv.height);
 }
 function closePause(){
   paused=false;
   document.getElementById('pause').style.display='none';
 }
 function drawPauseMap(ctx,W,H){
-  ctx.fillStyle='#050a12';ctx.fillRect(0,0,W,H);
-  // Grid
-  ctx.strokeStyle='rgba(20,40,60,.4)';ctx.lineWidth=.5;
-  for(let g=0;g<=8;g++){
-    const gx=g/8*W,gz=g/8*H;
-    ctx.beginPath();ctx.moveTo(gx,0);ctx.lineTo(gx,H);ctx.stroke();
-    ctx.beginPath();ctx.moveTo(0,gz);ctx.lineTo(W,gz);ctx.stroke();
+  ctx.fillStyle='#030608';ctx.fillRect(0,0,W,H);
+  // Grid lines
+  ctx.strokeStyle='rgba(15,30,50,.6)';ctx.lineWidth=.5;
+  for(let g=0;g<=12;g++){
+    const gx=g/12*W;ctx.beginPath();ctx.moveTo(gx,0);ctx.lineTo(gx,H);ctx.stroke();
+    const gz=g/12*H;ctx.beginPath();ctx.moveTo(0,gz);ctx.lineTo(W,gz);ctx.stroke();
   }
-  // Scale functions
-  const wx=(x)=>(x-WX0)/WXS*W;
-  const wz=(z)=>(z-WZ0)/WZS*H;
+  const wx=x=>(x-WX0)/WXS*W, wz=z=>(z-WZ0)/WZS*H;
   // Roads
   roads.forEach(r=>{
-    const rw=Math.max(1.5,r.w/WXS*W*1.2);
-    ctx.strokeStyle='rgba(70,78,60,.85)';ctx.lineWidth=rw;
+    const rw=Math.max(1.5,r.w/WXS*W*1.1);
+    const isEW=r.w>r.d;
+    ctx.strokeStyle=r.dirt?'rgba(90,70,40,.7)':'rgba(55,68,48,.9)';ctx.lineWidth=rw+1;
     ctx.beginPath();
-    if(r.w>r.d){ctx.moveTo(wx(r.x-r.w/2),wz(r.z));ctx.lineTo(wx(r.x+r.w/2),wz(r.z));}
+    if(isEW){ctx.moveTo(wx(r.x-r.w/2),wz(r.z));ctx.lineTo(wx(r.x+r.w/2),wz(r.z));}
     else{ctx.moveTo(wx(r.x),wz(r.z-r.d/2));ctx.lineTo(wx(r.x),wz(r.z+r.d/2));}
     ctx.stroke();
-    ctx.strokeStyle='rgba(100,110,88,.5)';ctx.lineWidth=rw*.35;ctx.stroke();
+    ctx.strokeStyle=r.dirt?'rgba(110,88,55,.4)':'rgba(80,98,65,.4)';ctx.lineWidth=rw*.3;ctx.stroke();
   });
   // Buildings
-  ctx.fillStyle='rgba(22,32,48,.8)';
-  bList.forEach(b=>{ctx.fillRect(wx(b.minX),wz(b.minZ),wx(b.maxX)-wx(b.minX),wz(b.maxZ)-wz(b.minZ));});
-  // Delivery blips
+  ctx.fillStyle='rgba(16,26,40,.85)';
+  bList.forEach(b=>{
+    const bx=wx(b.minX),bz=wz(b.minZ),bw=wx(b.maxX)-bx,bd=wz(b.maxZ)-bz;
+    if(bw>1&&bd>1)ctx.fillRect(bx,bz,bw,bd);
+  });
+  // Delivery blips — numbered
   dmarkers.forEach((dm,i)=>{
     if(dm.done)return;
     const cur=i===curDel;
-    ctx.fillStyle=cur?'#ffee22':'rgba(160,110,20,.7)';
-    const bx=wx(dm.data.x),bz=wz(dm.data.z),br=cur?5:3;
-    ctx.beginPath();ctx.arc(bx,bz,br,0,Math.PI*2);ctx.fill();
-    if(cur){ctx.strokeStyle='#ffee22';ctx.lineWidth=1.5;ctx.stroke();}
-    ctx.fillStyle=cur?'#ffcc00':'rgba(140,95,15,.9)';
-    ctx.font=(cur?'8':'6')+'px Courier New';ctx.textAlign='center';
-    ctx.fillText(i+1,bx,bz-(cur?8:5));
+    const px=wx(dm.data.x),pz=wz(dm.data.z),pr=cur?7:4;
+    ctx.fillStyle=cur?'#ffee22':'rgba(180,120,15,.8)';
+    ctx.beginPath();ctx.arc(px,pz,pr,0,Math.PI*2);ctx.fill();
+    if(cur){ctx.strokeStyle='rgba(255,220,30,.7)';ctx.lineWidth=2;ctx.stroke();}
+    ctx.fillStyle=cur?'#111':'#333';ctx.font=(cur?'8':'6')+'px monospace';
+    ctx.textAlign='center';ctx.fillText(i+1,px,pz+(cur?3:2));
   });
-  // Van blip
+  // Van blip — white arrow
   const vx2=wx(van.x),vz2=wz(van.z);
   ctx.save();ctx.translate(vx2,vz2);ctx.rotate(-van.ang+Math.PI);
-  ctx.fillStyle='#44ddff';
-  ctx.beginPath();ctx.moveTo(0,-7);ctx.lineTo(4,4);ctx.lineTo(-4,4);ctx.closePath();ctx.fill();
-  ctx.restore();
+  ctx.fillStyle='#44ddff';ctx.strokeStyle='#226688';ctx.lineWidth=1;
+  ctx.beginPath();ctx.moveTo(0,-9);ctx.lineTo(5,5);ctx.lineTo(-5,5);ctx.closePath();
+  ctx.fill();ctx.stroke();ctx.restore();
   // District labels
-  [['ARCTIC HQ',-320,-130],['DOWNTOWN',15,90],['OLD TOWN',-165,195],
-   ['SHOPPING',-340,195],['E. SUBURBS',265,110],['W. SUBURBS',-185,90],
-   ['UNIVERSITY',30,380],['APARTMENTS',193,350],['HIGHWAY',0,265],
-   ['TRAILER PARK',-315,468],['RURAL TOWN',355,455],['FARMLAND',370,650],
-   ['FOREST',-390,640],['HARBOR',-395,90],['STATION',15,345]
-  ].forEach(([n,x,z])=>{
-    ctx.fillStyle='rgba(60,100,140,.7)';ctx.font='8px Courier New';ctx.textAlign='center';
-    ctx.fillText(n,wx(x),wz(z));
-  });
+  ctx.textAlign='center';ctx.fillStyle='rgba(55,90,130,.8)';ctx.font='8px Courier New';
+  [['HQ',-320,-140],['DTWN',10,90],['OLD TOWN',-165,195],['SHOP',-340,195],
+   ['E.SUB',265,110],['W.SUB',-185,90],['UNIV',30,380],['APTS',193,350],
+   ['HWY',0,265],['RURAL',355,455],['FARM',370,650],['HARBOR',-395,90]
+  ].forEach(([n,x,z])=>ctx.fillText(n,wx(x),wz(z)));
 }
+
 
 // Save/Load using localStorage
 function saveGame(){
