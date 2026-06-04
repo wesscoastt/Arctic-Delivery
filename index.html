@@ -20,7 +20,7 @@ html,body{width:100%;height:100%;background:#060e1a;overflow:hidden}
 
 /* ══ GTA SA MOBILE LAYOUT ══ */
 /* RADAR — top left */
-#mm-wrap{position:absolute;top:calc(8px + var(--st));left:calc(8px + var(--sl));
+#mm-wrap{display:none;position:absolute;top:calc(8px + var(--st));left:calc(8px + var(--sl));
   width:124px;height:124px;border-radius:50%;overflow:hidden;
   border:2px solid rgba(0,0,0,.9);
   box-shadow:0 0 0 1px rgba(80,80,80,.3),0 3px 16px rgba(0,0,0,.7);
@@ -37,7 +37,7 @@ html,body{width:100%;height:100%;background:#060e1a;overflow:hidden}
   min-width:160px;text-align:center}
 
 /* TOP RIGHT — time + route stacked */
-#cc{position:absolute;top:calc(8px + var(--st));right:calc(8px + var(--sr));
+#cc{display:none;position:absolute;top:calc(8px + var(--st));right:calc(8px + var(--sr));
   text-align:right;pointer-events:none}
 #cc-time{font-size:24px;color:#ffffff;letter-spacing:2px;
   text-shadow:1px 1px 0 #000,2px 2px 6px rgba(0,0,0,.8);font-weight:bold}
@@ -45,7 +45,8 @@ html,body{width:100%;height:100%;background:#060e1a;overflow:hidden}
   text-shadow:1px 1px 0 #000,0 0 8px rgba(40,180,80,.4)}
 #cc-day{font-size:7px;color:#606040;margin-top:3px;letter-spacing:2px}
 #cc-wx{font-size:7px;color:#505030;margin-top:1px;letter-spacing:1px}
-
+#cc-radio{font-size:7px;color:#806828;margin-top:3px;max-width:130px;
+  overflow:hidden;white-space:nowrap;text-overflow:ellipsis}
 
 /* ROUTE CARD — under radio */
 #rc{position:absolute;top:0;left:50%;transform:translateX(-50%);height:26px;width:auto;max-width:58%;min-width:260px;background:rgba(2,5,14,.92);border:1px solid rgba(30,55,95,.3);border-top:none;border-radius:0 0 6px 6px;display:flex;align-items:center;justify-content:center;gap:10px;padding:0 14px;pointer-events:none;opacity:0;transition:opacity .3s;z-index:5}
@@ -57,7 +58,7 @@ html,body{width:100%;height:100%;background:#060e1a;overflow:hidden}
 #rc-arrow{font-size:14px;color:#ffcc22;transition:transform .3s;display:inline-block;flex-shrink:0}
 
 /* SPEED — below radar */
-#spd-wrap{position:absolute;top:calc(140px + var(--st));left:calc(8px + var(--sl));
+#spd-wrap{display:none;position:absolute;top:calc(140px + var(--st));left:calc(8px + var(--sl));
   text-align:center;width:124px;pointer-events:none}
 #spd-val{font-size:28px;color:#fff;letter-spacing:1px;line-height:1;
   text-shadow:1px 1px 0 #000,0 2px 8px rgba(0,0,0,.7)}
@@ -119,14 +120,12 @@ html,body{width:100%;height:100%;background:#060e1a;overflow:hidden}
 #lflash{position:absolute;inset:0;pointer-events:none;background:#c8ddf0;opacity:0;z-index:5;transition:opacity .04s}
 
 /* JOYSTICK — invisible */
-#joyarea{position:absolute;bottom:0;left:0;width:44%;height:55%;pointer-events:auto;touch-action:none}
+#joyarea{position:absolute;bottom:0;left:0;width:44%;height:55%;pointer-events:auto;touch-action:none;display:none}
 #joybase{position:absolute;bottom:calc(26px + var(--sb));left:calc(26px + var(--sl));
-  width:100px;height:100px;border-radius:50%;
-  border:1.5px solid rgba(255,255,255,.18);background:rgba(255,255,255,.05);
-  pointer-events:none;opacity:1}
+  width:100px;height:100px;border-radius:50%;border:none;background:none;
+  pointer-events:none;opacity:0}
 #joyknob{position:absolute;top:50%;left:50%;width:42px;height:42px;border-radius:50%;
-  background:rgba(255,255,255,.12);border:1.5px solid rgba(255,255,255,.3);
-  transform:translate(-50%,-50%);pointer-events:none}
+  background:none;border:none;transform:translate(-50%,-50%);pointer-events:none}
 
 /* TITLE */
 #title{position:absolute;inset:0;background:#03070f;display:flex;flex-direction:column;
@@ -210,23 +209,6 @@ html,body{width:100%;height:100%;background:#060e1a;overflow:hidden}
 #save-toast{font-size:7px;color:#44ee88;letter-spacing:1px;text-align:center;
   opacity:0;transition:opacity .3s;height:14px}
 
-
-#itinoverlay{position:absolute;inset:0;background:rgba(0,0,0,.93);z-index:160;display:none;flex-direction:column;pointer-events:auto;font-family:'Courier New',monospace}
-#itin-header{display:flex;justify-content:space-between;align-items:center;padding:10px 16px;border-bottom:1px solid rgba(30,55,95,.35)}
-#itin-title{font-size:10px;color:#4a7090;letter-spacing:3px}
-#itin-close{font-size:20px;color:#2e4560;background:none;border:none;font-family:inherit;cursor:pointer;padding:2px 10px}
-#itin-list{flex:1;overflow-y:auto;padding:8px 0}
-.itin-stop{display:flex;align-items:center;gap:12px;padding:10px 16px;border-bottom:1px solid rgba(20,35,60,.4)}
-.itin-stop.itin-done{opacity:.35}
-.itin-stop.itin-cur{background:rgba(20,50,20,.4);border-left:3px solid #44ee88;padding-left:13px}
-.itin-num{font-size:9px;color:#2e4560;width:18px;text-align:right;flex-shrink:0}
-.itin-icon{font-size:18px;flex-shrink:0;width:24px}
-.itin-info{flex:1;min-width:0}
-.itin-addr{font-size:10px;color:#8aaa88;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.itin-stop.itin-cur .itin-addr{color:#aaccaa;font-size:11px}
-.itin-type{font-size:8px;color:#3a5560;margin-top:1px}
-.itin-dist{font-size:8px;color:#3a5048;flex-shrink:0}
-.itin-check{font-size:14px;color:#336633;flex-shrink:0}
 </style>
 </head>
 <body>
@@ -239,7 +221,9 @@ html,body{width:100%;height:100%;background:#060e1a;overflow:hidden}
     <div class="t1">ARCTIC</div>
     <div class="t2">DELIVERY CO.</div>
     <div class="t3">"every package tells a story"</div>
-    <button id="startbtn">[ CLOCK IN ]</button>
+    <button id="btn-normal" onclick="window._cm=false;document.getElementById('startbtn').click()" style="font-family:'Courier New',monospace;cursor:pointer;padding:12px 24px;border:1px solid rgba(40,80,140,.4);background:rgba(4,12,28,.8);color:#6a9ab8;font-size:10px;letter-spacing:2px;margin-bottom:10px;display:block;width:240px">[ STANDARD SHIFT ]</button>
+    <button id="btn-crazy" onclick="window._cm=true;document.getElementById('startbtn').click()" style="font-family:'Courier New',monospace;cursor:pointer;padding:12px 24px;border:1px solid rgba(180,100,20,.4);background:rgba(4,12,28,.8);color:#dd8833;font-size:10px;letter-spacing:2px;display:block;width:240px">[ CRAZY SHIFT ]</button>
+    <button id="startbtn" style="display:none">[ CLOCK IN ]</button>
     <div id="ctrls">
       <span class="ck">W/S</span> Drive &nbsp;
       <span class="ck">A/D</span> Steer &nbsp;
@@ -285,7 +269,8 @@ html,body{width:100%;height:100%;background:#060e1a;overflow:hidden}
     </div>
   </div>
 
-  <div id="itinoverlay"><div id="itin-header"><div id="itin-title">◈ ROUTE ITINERARY</div><button id="itin-close">✕</button></div><div id="itin-list"></div></div>
+  <div id="itinoverlay" style="position:absolute;inset:0;background:rgba(0,0,0,.93);z-index:160;display:none;flex-direction:column;pointer-events:auto;font-family:'Courier New',monospace"><div style="padding:12px 16px;border-bottom:1px solid rgba(30,55,95,.3);display:flex;justify-content:space-between;align-items:center"><span style="color:#4a7090;font-size:10px;letter-spacing:2px">ROUTE ITINERARY</span><button id="itin-close" style="background:none;border:none;color:#4a7090;font-size:20px;cursor:pointer;font-family:inherit;padding:2px 8px">X</button></div><div id="itin-list" style="flex:1;overflow-y:auto"></div></div>
+  <div id="shift-report" style="position:absolute;inset:0;background:rgba(0,0,0,.96);z-index:200;display:none;flex-direction:column;align-items:center;justify-content:center;font-family:'Courier New',monospace;pointer-events:auto"><div style="border:1px solid rgba(30,55,95,.5);padding:28px 36px;min-width:240px;text-align:center"><div id="sr-mode" style="font-size:8px;color:#2e4560;letter-spacing:3px;margin-bottom:16px">SHIFT</div><div id="sr-day" style="font-size:18px;color:#6a9ab8;letter-spacing:4px;margin-bottom:14px">DAY 1</div><div style="display:flex;justify-content:space-between;gap:24px;margin:6px 0;font-size:9px;padding-bottom:5px;border-bottom:1px solid rgba(30,55,95,.2)"><span style="color:#2e4560">STOPS</span><span id="sr-stops" style="color:#8aaa88">0/12</span></div><div style="display:flex;justify-content:space-between;gap:24px;margin:6px 0;font-size:9px;padding-bottom:5px;border-bottom:1px solid rgba(30,55,95,.2)"><span style="color:#2e4560">EARNINGS</span><span id="sr-earn" style="color:#8aaa88">$0</span></div><div style="display:flex;justify-content:space-between;gap:24px;margin:6px 0;font-size:9px;padding-bottom:5px;border-bottom:1px solid rgba(30,55,95,.2)"><span style="color:#2e4560">MILES</span><span id="sr-miles" style="color:#8aaa88">0 mi</span></div><div style="display:flex;justify-content:space-between;gap:24px;margin:6px 0;font-size:9px;padding-bottom:5px;border-bottom:1px solid rgba(30,55,95,.2)"><span style="color:#2e4560">RATING</span><span id="sr-rating" style="color:#8aaa88">-</span></div><div id="sr-total" style="font-size:8px;color:#4a7090;margin-top:14px">CAREER: $0</div><button id="sr-newshift" style="margin-top:20px;font-family:'Courier New',monospace;font-size:9px;letter-spacing:2px;color:#3a6080;padding:12px 28px;border:1px solid rgba(30,65,120,.4);background:rgba(2,8,22,.9);cursor:pointer;-webkit-tap-highlight-color:transparent">[ NEW SHIFT ]</button></div></div>
   <!-- HUD -->
   <div id="mm-wrap"><canvas id="mmcanvas" width="124" height="124"></canvas></div>
   <div id="mapoverlay">
@@ -500,60 +485,39 @@ function mkGasStation(cx,cz){
 // ══ D1 ARCTIC HQ / INDUSTRIAL SOUTH ══════════════════════════════════════════
 addBldg(-320,-140,32,20,12,0x5a6a7a,'warehouse'); // ARCTIC HQ main
 addBldg(-320,-165,20,12, 8,0x48586a,'warehouse'); // Annex
-
-// ── ARCTIC HQ SIGN ──────────────────────────────────────────────
 (function(){
-  const back=new THREE.Mesh(new THREE.BoxGeometry(28,3.5,.3),
-    new THREE.MeshPhongMaterial({color:0x060e18,flatShading:true}));
-  back.position.set(-320,9.8,-129.85);scene.add(back);
-  const glow=new THREE.Mesh(new THREE.BoxGeometry(26,2.8,.12),
-    new THREE.MeshPhongMaterial({color:0x061020,emissive:new THREE.Color(0x0a3080),emissiveIntensity:.8,flatShading:true}));
-  glow.position.set(-320,9.8,-129.7);scene.add(glow);
-  [-10.5,-7.5,-4.5,-1.5,1.5,4.5].forEach(function(ox){
-    const lb=new THREE.Mesh(new THREE.BoxGeometry(1.8,1.6,.15),
-      new THREE.MeshPhongMaterial({color:0x0a1828,emissive:new THREE.Color(0xaaddff),emissiveIntensity:1.8,flatShading:true}));
-    lb.position.set(-320+ox,10.4,-129.6);scene.add(lb);
-  });
-  for(var i=0;i<11;i++){
-    const lb=new THREE.Mesh(new THREE.BoxGeometry(1.2,.8,.1),
-      new THREE.MeshPhongMaterial({color:0x080e18,emissive:new THREE.Color(0xddaa22),emissiveIntensity:1.2,flatShading:true}));
-    lb.position.set(-327+i*2.0,9.0,-129.6);scene.add(lb);
-  }
-})();
-
-// ── ARCTIC HQ PARKING LOT ────────────────────────────────────────
-(function(){
-  const lot=new THREE.Mesh(new THREE.PlaneGeometry(165,68),
-    new THREE.MeshPhongMaterial({color:0x1a1a1a,flatShading:true}));
+  // Lot surface
+  var lot=new THREE.Mesh(new THREE.PlaneGeometry(165,68),fm(0x191919));
   lot.rotation.x=-Math.PI/2;lot.position.set(-180,.012,-132);scene.add(lot);
-  // 4 ARCTIC fleet vans
-  [[-115,-112],[-132,-112],[-149,-112],[-166,-112]].forEach(function(pos){
-    const g=new THREE.Group();
-    const body=new THREE.Mesh(new THREE.BoxGeometry(1.6,.82,3.6),fm(0xe2e4dc));body.position.y=.68;g.add(body);
-    const cab=new THREE.Mesh(new THREE.BoxGeometry(1.44,.68,1.88),fm(0xd8dcd4));cab.position.set(0,1.33,-.28);g.add(cab);
-    const stripe=new THREE.Mesh(new THREE.BoxGeometry(1.62,.28,3.5),fm(0x1a44aa));stripe.position.set(0,.68,0);g.add(stripe);
-    const wm=fm(0x0c0c0e);
+  // 4 fleet vans
+  [[-115,-112],[-132,-112],[-149,-112],[-166,-112]].forEach(function(p){
+    var g=new THREE.Group();
+    var body=new THREE.Mesh(new THREE.BoxGeometry(1.6,.82,3.6),fm(0xe2e4dc));body.position.y=.68;g.add(body);
+    var cab=new THREE.Mesh(new THREE.BoxGeometry(1.44,.68,1.88),fm(0xd8dcd4));cab.position.set(0,1.33,-.28);g.add(cab);
+    var stripe=new THREE.Mesh(new THREE.BoxGeometry(1.62,.28,3.5),fm(0x1a44aa));stripe.position.set(0,.68,0);g.add(stripe);
     [[-0.86,.3,1.18],[.86,.3,1.18],[-0.86,.3,-1.18],[.86,.3,-1.18]].forEach(function(w){
-      const wh=new THREE.Mesh(new THREE.CylinderGeometry(.28,.28,.22,6),wm);wh.rotation.z=Math.PI/2;wh.position.set(w[0],w[1],w[2]);g.add(wh);
+      var wh=new THREE.Mesh(new THREE.CylinderGeometry(.28,.28,.22,6),fm(0x0c0c0e));
+      wh.rotation.z=Math.PI/2;wh.position.set(w[0],w[1],w[2]);g.add(wh);
     });
-    g.position.set(pos[0],0,pos[1]);g.rotation.y=Math.PI;scene.add(g);
+    g.position.set(p[0],0,p[1]);g.rotation.y=Math.PI;scene.add(g);
   });
-  // 6 employee cars (simple 2-mesh)
-  var carCols=[0x3a4a5a,0x7a4828,0x2a3a2a,0xaa9860,0x4a5a6a,0x5a3a2a];
-  [[-115,-128],[-132,-128],[-149,-128],[-166,-128],[-183,-128],[-200,-128]].forEach(function(pos,ci){
-    const g=new THREE.Group();
-    const col=carCols[ci];
-    const body=new THREE.Mesh(new THREE.BoxGeometry(1.5,.72,3.2),fm(col));body.position.y=.62;g.add(body);
-    const roof=new THREE.Mesh(new THREE.BoxGeometry(1.3,.52,1.6),fm(col));roof.position.set(0,1.14,-.2);g.add(roof);
-    g.position.set(pos[0],0,pos[1]);scene.add(g);
+  // 6 employee cars
+  [0x3a4a5a,0x7a4828,0x2a3a2a,0xaa9860,0x4a5a6a,0x5a3a2a].forEach(function(col,i){
+    var g=new THREE.Group();
+    var body=new THREE.Mesh(new THREE.BoxGeometry(1.5,.72,3.2),fm(col));body.position.y=.62;g.add(body);
+    var roof=new THREE.Mesh(new THREE.BoxGeometry(1.3,.52,1.6),fm(col));roof.position.set(0,1.14,-.2);g.add(roof);
+    g.position.set(-115-17*i,0,-128);scene.add(g);
   });
   // Security booth
-  const booth=new THREE.Mesh(new THREE.BoxGeometry(2.2,2.5,2.2),fm(0x3a4a54));
+  var booth=new THREE.Mesh(new THREE.BoxGeometry(2.2,2.5,2.2),fm(0x3a4a54));
   booth.position.set(-103,1.25,-132);scene.add(booth);
-  // Barrier
-  const bar=new THREE.Mesh(new THREE.BoxGeometry(8,.1,.1),
-    new THREE.MeshPhongMaterial({color:0x111,emissive:new THREE.Color(0xff2200),emissiveIntensity:.7,flatShading:true}));
-  bar.position.set(-97,.8,-132);scene.add(bar);
+  // HQ sign
+  var back=new THREE.Mesh(new THREE.BoxGeometry(28,3.5,.3),fm(0x060e18));
+  back.position.set(-320,9.8,-129.85);scene.add(back);
+  [-10.5,-7.5,-4.5,-1.5,1.5,4.5].forEach(function(ox){
+    var lb=new THREE.Mesh(new THREE.BoxGeometry(1.8,1.6,.15),em(0x0a1828,0xaaddff,1.8));
+    lb.position.set(-320+ox,10.4,-129.6);scene.add(lb);
+  });
 })();
 addBldg(-375,-140,18,14, 8,0x44546a,'warehouse'); // West
 addBldg(-265,-138,16,13, 7,0x526070,'warehouse'); // East building
@@ -1051,7 +1015,7 @@ function updTraffic(dt){
 }
 
 // ── EXTRA GAS STATIONS + MAP DENSITY ────────────────────────────
-mkGasStation(-440,130);mkGasStation(200,400);mkGasStation(-150,535);mkGasStation(0,660);
+mkGasStation(-440,108);mkGasStation(218,400);mkGasStation(-135,535);mkGasStation(22,660);
 // Far west buildings
 addBldg(-420,55,8,7,4,0x808878,'shop');addBldg(-420,80,7,6,4,0x909080,'shop');
 addBldg(-420,120,8,7,5,0x808890,'shop');addBldg(-420,200,9,8,5,0x88887a,'office');
@@ -1070,22 +1034,16 @@ addBldg(300,542,9,8,4,0x889068,'shop');addBldg(420,542,9,8,4,0xa09070,'shop');
 addBldg(-200,668,8,7,4,0xa09060,'shop');addBldg(0,668,9,8,4,0x909068,'shop');
 addBldg(200,668,7,6,4,0xb09060,'house');
 
-
 function addBiz(cx,cz,w,d,h,col,sc){
   addBldg(cx,cz,w,d,h,col,'shop');
-  const sg=new THREE.Mesh(new THREE.BoxGeometry(w*.5,.35,.06),
-    new THREE.MeshPhongMaterial({color:0x050505,emissive:new THREE.Color(sc||0xff6600),emissiveIntensity:.8,flatShading:true}));
+  var sg=new THREE.Mesh(new THREE.BoxGeometry(w*.5,.35,.06),em(0x050505,sc||0xff6600,.8));
   sg.position.set(cx,h*.72,cz+d/2+.05);scene.add(sg);
 }
-
-// ── MAIN ST COMMERCIAL ──────────────────────────────────────────
 addBiz(-180,14,9,7,4,0xc8b890,0xff4400);addBiz(-155,14,8,7,4,0xc8c8a0,0x0088ff);
-addBiz(-130,14,9,7,4,0xb0c8a0,0xffcc00);addBiz(-105,14,8,6,4,0xd0b890,0xff8800);
-addBiz( -80,14,9,7,4,0xb0a880,0x44aaff);addBiz( -55,14,8,7,4,0xc0b888,0xffaa00);
-addBiz(  40,14,8,7,4,0xb8c0a0,0xff4400);addBiz(  90,14,9,7,4,0xd0b890,0x0088ff);
-// Main St north (z=-14) — 6 shops
+addBiz(-130,14,9,7,4,0xb0c8a0,0xffcc00);addBiz(-80,14,9,7,4,0xb0a880,0x44aaff);
+addBiz(-55,14,8,7,4,0xc0b888,0xffaa00);addBiz(40,14,8,7,4,0xb8c0a0,0xff4400);
 addBiz(-160,-14,9,7,4,0xb8a880,0xffcc00);addBiz(-120,-14,8,7,4,0xc0b888,0xff8800);
-addBiz( -80,-14,9,7,4,0xb8c890,0x44aaff);addBiz(  60,-14,8,7,4,0xc0c0a8,0xffaa00);
+addBiz(-80,-14,9,7,4,0xb8c890,0x44aaff);addBiz(60,-14,8,7,4,0xc0c0a8,0xffaa00);
 // ── STARS ─────────────────────────────────
 const sGeo=new THREE.BufferGeometry();
 const sPos=new Float32Array(350*3);
@@ -1123,11 +1081,10 @@ const ddata=[
   {id:11,x: 320,z: 610,addr:'Maple Farm Red Barn',      name:'Nguyen Family',note:'Ring bell twice',                  walk:true, type:'rural'},
 ]
 const dmarkers=[];
-// Random names each shift
 (function(){
-  var fn=['J. Kim','M. Patel','D. Okafor','S. Nguyen','R. Malik','A. Torres','L. Reyes','B. Chen','T. Williams','C. Jackson'];
-  var nt=['Leave at door','Ring bell','Fragile','Sign required','Back door','Handle with care'];
-  var st=['Pine Ave','Oak St','Maple Dr','Cedar Ln','Birch Rd','Elm St','Willow Way'];
+  var fn=['J. Kim','M. Patel','D. Okafor','S. Nguyen','R. Malik','A. Torres','L. Reyes','B. Chen'];
+  var nt=['Leave at door','Ring bell','Fragile','Sign required','Back door'];
+  var st=['Pine Ave','Oak St','Maple Dr','Cedar Ln','Birch Rd'];
   ddata.forEach(function(d){
     d.name=fn[Math.floor(Math.random()*fn.length)];
     d.note=nt[Math.floor(Math.random()*nt.length)];
@@ -1135,31 +1092,6 @@ const dmarkers=[];
       d.addr=(Math.floor(Math.random()*9900)+100)+' '+st[Math.floor(Math.random()*st.length)];
   });
 })();
-
-// Itinerary overlay
-let itinOpen=false;
-const TYPE_LABELS={house:'Residential',apartment:'Apartment',business:'Business',locker:'Locker',gated:'Gated',mailbox:'Mailbox',rural:'Rural'};
-function toggleItinerary(){
-  itinOpen=!itinOpen;
-  var el=document.getElementById('itinoverlay');
-  if(el)el.style.display=itinOpen?'flex':'none';
-  if(itinOpen)buildItinerary();
-}
-function buildItinerary(){
-  var list=document.getElementById('itin-list');
-  if(!list)return;
-  list.innerHTML='';
-  ddata.forEach(function(stop,i){
-    var dm=dmarkers[i],done=dm&&dm.done,cur=i===curDel&&!done;
-    var cfg=DEL_CFG[stop.type]||DEL_CFG.house;
-    var dist=Math.round(dst(getPX(),getPZ(),stop.x,stop.z)*0.3);
-    var row=document.createElement('div');
-    row.className='itin-stop'+(done?' itin-done':'')+(cur?' itin-cur':'');
-    row.innerHTML='<span class="itin-num">'+(i+1)+'</span><span class="itin-icon">'+cfg.icon+'</span><div class="itin-info"><div class="itin-addr">'+stop.addr+'</div><div class="itin-type">'+(TYPE_LABELS[stop.type]||stop.type)+' · '+stop.name+'</div></div><span class="itin-dist">'+(done?'':dist+'mi')+'</span><span class="itin-check">'+(done?'✓':'')+'</span>';
-    list.appendChild(row);
-  });
-}
-(function(){var ic=document.getElementById('itin-close');if(ic)ic.addEventListener('click',function(){itinOpen=false;var el=document.getElementById('itinoverlay');if(el)el.style.display='none';});})();
 
 const ringMat=new THREE.MeshBasicMaterial({color:0xffee22,side:THREE.DoubleSide});
 ddata.forEach(d=>{
@@ -1805,10 +1737,12 @@ function musStart(){if(!audioCtx||musRunning)return;musRunning=true;musStep=0;st
 function musStop(){musRunning=false;if(musTimer){clearTimeout(musTimer);musTimer=null;}}
 function musNextTrack(){
   musStop();musIdx=(musIdx+1)%MUSIC.length;
-  showNotif('♪ '+MUSIC[musIdx].a+' — '+MUSIC[musIdx].n,2800,'info');
+
+
   if(audioCtx)setTimeout(()=>{musRunning=false;musStart();},120);
 }
 function updRadio(){
+
 }
 
 // ── DISPATCH / EVENTS ─────────────────────
@@ -1868,10 +1802,13 @@ function doDeliver(){
 function endDeliver(){
   delivering=false;document.getElementById('delprog').style.display='none';document.getElementById('dellbl').style.display='none';
   const dm=getCurDM();if(!dm)return;
+  if(crazyMode&&delivTimeLimit>0&&delivTimer>delivTimeLimit*0.55){earnings+=5;showNotif('FAST +$5',1800,'ok');}
+  shiftRatings.push(crazyMode&&delivTimeLimit>0?(delivTimer/delivTimeLimit>0.5?5:delivTimer/delivTimeLimit>0.3?4:3):5);
   dm.done=true;dm.ring.visible=false;dm.pole.visible=false;
   const tips={house:12,apartment:18,business:8,locker:5,gated:25,mailbox:6,rural:15};
   earnings+=(tips[dm.data.type]||10)+Math.floor(Math.random()*8);dm.top.visible=false;dm.pl.intensity=0;
   delivered++;curDel++;playChime();
+  if(crazyMode&&curDel<ddata.length)startDelivTimer();
   const dm2=dm; // closure ref
   const cfg=DEL_CFG[dm2.data.type]||DEL_CFG.house;
   const msgs={house:['✓ Door delivery · ','✓ Knocked and signed · '],apartment:['✓ Buzzed in · ','✓ Signed at buzzer · '],business:['✓ Dropped at reception · ','✓ Signed for · '],locker:['✓ Locker loaded · '],gated:['✓ Gate opened · ','✓ Intercom delivery · '],mailbox:['✓ Left in mailbox for '],rural:['✓ Bell rung · ']};
@@ -1888,7 +1825,7 @@ function endShift(){
   const el=Math.floor((Date.now()-shiftStart)/1000),mn=Math.floor(el/60),sc=el%60;
   const stars='★'.repeat(Math.min(5,Math.round(delivered/ddata.length*5)))+'☆'.repeat(Math.max(0,5-Math.round(delivered/ddata.length*5)));
   document.getElementById('dstats').innerHTML=`PACKAGES: ${delivered}/${ddata.length}<br>TIME: ${mn}:${sc.toString().padStart(2,'0')}<br>EARNINGS: $${earnings}<br>RATING: ${stars}`;
-  document.getElementById('done').style.display='flex';shiftActive=false;
+  shiftActive=false;setTimeout(showShiftReport,800);
 }
 
 // ── TUTORIAL (first-day guide) ───────────
@@ -1901,7 +1838,7 @@ function updTutorial(){
   if(Math.abs(van.spd)>.3)tutMoved=true;
   let hint=null;
   if(!tutMoved&&inVan){hint='DISPATCH: Use left stick or W/S to drive · A/D to steer';}
-  else if(inVan&&d>60&&tutPhase===0){hint='▲ Route card shows your stop · follow the yellow arrow';}
+  else if(inVan&&d>60&&tutPhase===0){hint='▲ Route card shows direction (N/S/E/W) and distance to next stop';}
   else if(inVan&&d>30&&d<=60){hint='▲ Getting close · watch for the yellow delivery marker';}
   else if(inVan&&d<=30&&dm.data.walk&&d>12){hint='Park nearby · you\'ll need to walk to this stop';}
   else if(inVan&&dm.data.walk&&nearDel()){hint='[ F ] Exit the van to make this delivery on foot';}
@@ -1924,17 +1861,20 @@ function drawMinimap(ctx,size,showLabels,panX,panY,zoom){
   ctx.save();
   ctx.beginPath();ctx.arc(R,R,R,0,Math.PI*2);ctx.clip();
   ctx.fillStyle='#060c10';ctx.fillRect(0,0,size,size);
-  var viewR=140;
-  var cx=getPX(),cz=getPZ(),ang=inVan?van.ang:player.ang;
-  var co=Math.cos(-ang),si=Math.sin(-ang);
-  var wm=function(wx,wz){var dx=(wx-cx)/viewR*R,dz=(wz-cz)/viewR*R;return[R+dx*co-dz*si,R+dx*si+dz*co];};
+  var vr=200,cx=getPX(),cz=getPZ(),ang=inVan?van.ang:player.ang;
+  var co=Math.cos(Math.PI-ang),si=Math.sin(Math.PI-ang);
+  var wm=function(wx,wz){
+    var dx=(wx-cx)/vr*R,dz=(wz-cz)/vr*R;
+    return[R+dx*co-dz*si,R+dx*si+dz*co];
+  };
   roads.forEach(function(r){
-    var isEW=r.w>r.d,rw=Math.max(2.5,r.w/viewR*R*0.85);
-    var p0=isEW?wm(r.x-r.w/2,r.z):wm(r.x,r.z-r.d/2);
-    var p1=isEW?wm(r.x+r.w/2,r.z):wm(r.x,r.z+r.d/2);
-    ctx.strokeStyle=r.dirt?'rgba(100,78,48,.85)':'rgba(72,84,60,.92)';
-    ctx.lineWidth=rw+2;ctx.beginPath();ctx.moveTo(p0[0],p0[1]);ctx.lineTo(p1[0],p1[1]);ctx.stroke();
-    ctx.strokeStyle=r.dirt?'rgba(118,94,58,.9)':'rgba(95,110,78,.88)';
+    var ew=r.w>r.d,rw=Math.max(2,r.w/vr*R*0.85);
+    var p0=ew?wm(r.x-r.w/2,r.z):wm(r.x,r.z-r.d/2);
+    var p1=ew?wm(r.x+r.w/2,r.z):wm(r.x,r.z+r.d/2);
+    ctx.strokeStyle=r.dirt?'rgba(120,95,55,.9)':'rgba(55,65,45,.95)';
+    ctx.lineWidth=rw+3;
+    ctx.beginPath();ctx.moveTo(p0[0],p0[1]);ctx.lineTo(p1[0],p1[1]);ctx.stroke();
+    ctx.strokeStyle=r.dirt?'rgba(140,110,65,.95)':'rgba(100,120,80,.98)';
     ctx.lineWidth=rw;ctx.stroke();
   });
   ctx.fillStyle='rgba(18,28,42,.88)';
@@ -1947,9 +1887,13 @@ function drawMinimap(ctx,size,showLabels,panX,panY,zoom){
     if(dm.done)return;
     var cur=i===curDel,p=wm(dm.data.x,dm.data.z);
     if(cur){ctx.fillStyle='rgba(255,220,30,.2)';ctx.beginPath();ctx.arc(p[0],p[1],9,0,Math.PI*2);ctx.fill();}
+    if(cur){
+      var pulse=0.5+0.5*Math.sin(Date.now()*0.006);
+      ctx.strokeStyle='rgba(255,230,40,'+pulse+')';
+      ctx.lineWidth=1.5;ctx.beginPath();ctx.arc(p[0],p[1],10,0,Math.PI*2);ctx.stroke();
+    }
     ctx.fillStyle=cur?'#ffee22':'rgba(210,148,18,.85)';
     ctx.beginPath();ctx.arc(p[0],p[1],cur?5:3,0,Math.PI*2);ctx.fill();
-    if(cur){ctx.strokeStyle='rgba(255,230,40,.8)';ctx.lineWidth=1.5;ctx.stroke();}
   });
   ctx.fillStyle='#fff';ctx.strokeStyle='rgba(0,0,0,.5)';ctx.lineWidth=1;
   ctx.beginPath();ctx.moveTo(R,R-7);ctx.lineTo(R+4.5,R+5);ctx.lineTo(R-4.5,R+5);
@@ -1998,6 +1942,7 @@ document.getElementById('mapoverlay').addEventListener('click',function(e){
 // ── HUD ───────────────────────────────────
 function updHUD(){
   const dm=getCurDM(),px=getPX(),pz=getPZ();
+  var clk=document.getElementById('cc-time');if(clk&&clk.textContent.indexOf('PM')>-1){var h=parseInt(clk.textContent);clk.style.color=(h>=5&&h<12)?'#ff5533':'';}
   const spd=Math.abs(inVan?van.spd:player.spd)*2.24;
   document.getElementById('spd-val').textContent=Math.round(spd);
   document.getElementById('spd-val').style.color=spd>55?'#ff5533':spd>38?'#ffcc33':'#44ee88';
@@ -2008,11 +1953,15 @@ function updHUD(){
   document.getElementById('rc-note').textContent=dm?dm.data.note:'';
   if(dm&&!gpsGlitch){
     const dx=dm.data.x-px,dz=dm.data.z-pz;
-    const ta=Math.atan2(dx,dz),ang=inVan?van.ang:player.ang;
-    document.getElementById('rc-arrow').style.transform=`rotate(${((ta-ang)*180/Math.PI+360)%360}deg)`;
-    document.getElementById('rc-dist').textContent=`${(dst(px,pz,dm.data.x,dm.data.z)*.31).toFixed(1)} mi · ${dm.data.name}`;
+    const ta=Math.atan2(dx,-dz)*180/Math.PI;
+    const dirs=['N','NE','E','SE','S','SW','W','NW'];
+    const card=dirs[Math.round(((ta%360)+360)%360/45)%8];
+    document.getElementById('rc-arrow').textContent=card;
+    document.getElementById('rc-arrow').style.transform='';
+    document.getElementById('rc-dist').textContent=`${(dst(px,pz,dm.data.x,dm.data.z)*.31).toFixed(1)} mi`;
   }else if(gpsGlitch){
-    document.getElementById('rc-arrow').style.transform=`rotate(${Math.random()*360}deg)`;
+    document.getElementById('rc-arrow').textContent='??';
+    document.getElementById('rc-arrow').style.transform='';
     document.getElementById('rc-dist').textContent='-- GPS ERR --';
   }else document.getElementById('rc-dist').textContent='';
   document.getElementById('cc-time').textContent=getTStr();
@@ -2078,17 +2027,18 @@ mBtn('btn-deliver',()=>{if(!audioCtx)initAudio();if(shiftActive&&nearDel()&&!del
 mBtn('btn-exit',()=>{if(!audioCtx)initAudio();doExitVan();});
 mBtn('btn-cam',()=>{if(inVan){camMode=(camMode+1)%3;showNotif(['Follow','Hood','Wide'][camMode],900,'info');}});
 mBtn('btn-light',()=>{van.lightsOn=!van.lightsOn;hlL.intensity=van.lightsOn?1.6:0;hlR.intensity=van.lightsOn?1.6:0;showNotif(van.lightsOn?'◎ Lights ON':'◎ Lights OFF',1100,'info');});
-mBtn('btn-itin',()=>toggleItinerary());
-mBtn('btn-pause-action',()=>{paused?closePause():openPause();});
+mBtn('btn-itin',function(){toggleItinerary();});
+mBtn('btn-pause-action',function(){paused?closePause():openPause();});
 
 document.getElementById('startbtn').addEventListener('click',showLoadout);
 document.getElementById('newshift').addEventListener('click',()=>{document.getElementById('done').style.display='none';initLoadout();document.getElementById('loadout').style.display='flex';document.getElementById('loadout').style.opacity='1';});
 function startShift(){
+  var crazyMode=window._cm||false;
   initAudio();shiftActive=true;shiftStart=Date.now();delivered=0;curDel=0;earnings=0;inVan=true;delivering=false;tutDone=false;tutMoved=false;tutPhase=0;
   dmarkers.forEach(dm=>{dm.done=false;dm.ring.visible=true;dm.pole.visible=true;dm.top.visible=true;});
   playerG.visible=false;
-  var _acEl=document.getElementById('actions');if(_acEl)_acEl.style.display='flex';
-  var _jyEl=document.getElementById('joyarea');if(_jyEl)_jyEl.style.display='block';
+  var _show={'mm-wrap':'block','spd-wrap':'block','cc':'block','actions':'flex'};
+  Object.keys(_show).forEach(function(id){var e=document.getElementById(id);if(e)e.style.display=_show[id];});
   setTimeout(()=>{showNotif('DISPATCH: Good morning · route loaded · first stop: '+ddata[0].addr,3500,'info');},400);
   updHUD();
 }
@@ -2100,6 +2050,114 @@ function showLoadout(){
   setTimeout(()=>{lo.style.opacity='1';},50);
   initLoadout();
 }
+// Wire mode buttons (after showLoadout is defined)
+(function(){
+  var bn=document.getElementById('btn-normal');
+  if(bn)bn.addEventListener('click',function(){crazyMode=false;showLoadout();});
+  var bc=document.getElementById('btn-crazy');
+  if(bc)bc.addEventListener('click',function(){crazyMode=true;showLoadout();});
+})();
+
+var itinOpen=false;
+function toggleItinerary(){
+  itinOpen=!itinOpen;
+  var el=document.getElementById('itinoverlay');
+  if(el)el.style.display=itinOpen?'flex':'none';
+  if(itinOpen){
+    var list=document.getElementById('itin-list');
+    if(!list)return;
+    list.innerHTML='';
+    ddata.forEach(function(stop,i){
+      var dm=dmarkers[i],done=dm&&dm.done,cur=i===curDel&&!done;
+      var row=document.createElement('div');
+      row.style.cssText='padding:10px 16px;border-bottom:1px solid rgba(30,55,95,.3);display:flex;gap:10px;align-items:center;opacity:'+(done?'.4':'1')+(cur?';background:rgba(20,50,20,.3)':'');
+      var types={house:'House',apartment:'Apt',business:'Biz',locker:'Locker',gated:'Gated',mailbox:'Mailbox',rural:'Rural'};
+      row.innerHTML='<span style="color:#2e4560;font-size:9px;width:16px">'+(i+1)+'</span>'
+        +'<div style="flex:1"><div style="color:'+(cur?'#aaccaa':'#8aaa88')+';font-size:10px">'+stop.addr+'</div>'
+        +'<div style="color:#3a5560;font-size:8px">'+(types[stop.type]||stop.type)+' - '+stop.name+'</div></div>'
+        +'<span style="color:#44ee88;font-size:12px">'+(done?'+':'')+'</span>';
+      list.appendChild(row);
+    });
+  }
+}
+(function(){
+  var ic=document.getElementById('itin-close');
+  if(ic)ic.addEventListener('click',function(){
+    itinOpen=false;
+    var el=document.getElementById('itinoverlay');
+    if(el)el.style.display='none';
+  });
+})();
+
+var dayCount=parseInt(localStorage.getItem('arctic_day')||'1');
+var careerEarnings=parseInt(localStorage.getItem('arctic_career')||'0');
+var milesDriven=0,lastVX=0,lastVZ=0;
+
+function showShiftReport(){
+  var el=document.getElementById('shift-report');if(!el)return;
+  careerEarnings+=earnings;
+  localStorage.setItem('arctic_day',String(dayCount+1));
+  localStorage.setItem('arctic_career',String(careerEarnings));
+  var avg=shiftRatings.length?(shiftRatings.reduce(function(a,b){return a+b;},0)/shiftRatings.length).toFixed(1):'5.0';
+  var q=function(id,v){var e=document.getElementById(id);if(e)e.textContent=v;};
+  q('sr-mode',crazyMode?'CRAZY SHIFT':'STANDARD SHIFT');
+  q('sr-day','DAY '+dayCount);
+  q('sr-stops',delivered+'/'+ddata.length);
+  q('sr-earn','$'+earnings);
+  q('sr-miles',milesDriven.toFixed(1)+' mi');
+  q('sr-rating',crazyMode?avg+' stars':'STANDARD');
+  q('sr-total','CAREER: $'+careerEarnings);
+  el.style.display='flex';
+  dayCount++;
+}
+
+(function(){
+  var ns=document.getElementById('sr-newshift');
+  if(ns)ns.addEventListener('click',function(){
+    var sr=document.getElementById('shift-report');if(sr)sr.style.display='none';
+    var t=document.getElementById('title');if(t){t.style.display='flex';t.style.opacity='1';}
+  });
+})();
+
+// Crazy mode mechanics
+var delivTimer=0,delivTimeLimit=0,shiftRatings=[],fineCD=0;
+var TIME_LIMITS={house:90,apartment:80,business:100,locker:70,gated:110,mailbox:75,rural:130};
+
+function startDelivTimer(){
+  if(!crazyMode)return;
+  var dm=getCurDM();if(!dm)return;
+  delivTimeLimit=TIME_LIMITS[dm.data.type]||90;
+  delivTimer=delivTimeLimit;
+}
+
+function updCrazy(dt){
+  if(!shiftActive)return;
+  // Miles
+  if(inVan){var dx=van.x-lastVX,dz=van.z-lastVZ;milesDriven+=Math.sqrt(dx*dx+dz*dz)*0.000621;lastVX=van.x;lastVZ=van.z;}
+  // Rain traction (both modes)
+  try{
+    var _wet=(wxState===2||wxState===3)?0.75:1.0;
+    if(_wet<1){van.spd=van.spd*Math.pow(_wet,0.016);}
+  }catch(e){}
+  if(!crazyMode)return;
+  // Timer
+  if(delivTimeLimit>0&&curDel<ddata.length){
+    delivTimer-=dt;
+    var el=document.getElementById('rc-dist');
+    if(el){var t=Math.ceil(Math.max(0,delivTimer));el.style.color=t<15?'#ff4422':t<30?'#ffaa22':'#44ee88';el.textContent=t+'s';}
+    if(delivTimer<=0){
+      delivTimeLimit=0;earnings=Math.max(0,earnings-5);
+      showNotif('TIME UP -$5',2400,'warn');
+      var dm=getCurDM();
+      if(dm){dm.done=true;dm.ring.visible=false;dm.pole.visible=false;dm.top.visible=false;dm.pl.intensity=0;delivered++;curDel++;updHUD();
+        if(curDel>=ddata.length)setTimeout(endShift,1800);else startDelivTimer();}
+    }
+  }
+  // Speed fine
+  fineCD=Math.max(0,fineCD-dt);
+  if(Math.abs(van.spd)*2.24>62&&fineCD<=0){fineCD=10;earnings=Math.max(0,earnings-8);showNotif('SPEEDING -$8',2200,'warn');}
+}
+
 
 // ── JOYSTICK — always visible ─────────────
 document.getElementById('joyarea').style.display='block';
@@ -2173,114 +2231,80 @@ function drawPauseMap(ctx,W,H){
   ctx.fillStyle='#080e08';ctx.fillRect(0,0,W,H);
   var wx=function(x){return(x-WX0)/WXS*W;};
   var wz=function(z){return(z-WZ0)/WZS*H;};
-  // Zone fills
-  var zones=[
-    {x:-490,z:-190,w:200,d:130,col:'rgba(30,36,28,.5)'},  // HQ industrial
-    {x:-250,z:-70,w:500,d:480,col:'rgba(22,28,32,.4)'},   // urban core
-    {x:-490,z:440,w:980,d:250,col:'rgba(18,30,14,.5)'},   // farmland/rural
-    {x:-490,z:-70,w:220,d:480,col:'rgba(18,26,30,.4)'},   // harbor/west
-    {x:220,z:-70,w:270,d:480,col:'rgba(24,32,24,.4)'},    // east suburbs
-  ];
-  zones.forEach(function(z){
-    ctx.fillStyle=z.col;
-    ctx.fillRect(wx(z.x),wz(z.z),wx(z.x+z.w)-wx(z.x),wz(z.z+z.d)-wz(z.z));
-  });
   // Roads
   roads.forEach(function(r){
-    var isEW=r.w>r.d,rw=Math.max(2,r.w/WXS*W*1.2);
+    var ew=r.w>r.d,rw=Math.max(2,r.w/WXS*W*1.2);
     ctx.strokeStyle=r.dirt?'rgba(100,80,50,.75)':'rgba(65,78,55,.9)';ctx.lineWidth=rw+2;
     ctx.beginPath();
-    if(isEW){ctx.moveTo(wx(r.x-r.w/2),wz(r.z));ctx.lineTo(wx(r.x+r.w/2),wz(r.z));}
+    if(ew){ctx.moveTo(wx(r.x-r.w/2),wz(r.z));ctx.lineTo(wx(r.x+r.w/2),wz(r.z));}
     else{ctx.moveTo(wx(r.x),wz(r.z-r.d/2));ctx.lineTo(wx(r.x),wz(r.z+r.d/2));}
     ctx.stroke();
     ctx.strokeStyle=r.dirt?'rgba(118,94,60,.85)':'rgba(90,108,72,.9)';ctx.lineWidth=rw;ctx.stroke();
   });
   // Buildings
-  ctx.fillStyle='rgba(16,26,38,.85)';ctx.strokeStyle='rgba(30,48,64,.5)';ctx.lineWidth=.5;
+  ctx.fillStyle='rgba(16,26,38,.85)';
   bList.forEach(function(b){
     var bx=wx(b.minX),bz=wz(b.minZ),bw=wx(b.maxX)-bx,bd=wz(b.maxZ)-bz;
-    if(Math.abs(bw)>1&&Math.abs(bd)>1){ctx.fillRect(bx,bz,bw,bd);ctx.strokeRect(bx,bz,bw,bd);}
+    if(Math.abs(bw)>1&&Math.abs(bd)>1)ctx.fillRect(bx,bz,bw,bd);
   });
   // Delivery blips
   ctx.textAlign='center';
   dmarkers.forEach(function(dm,i){
-    if(dm.done){
-      var p=[wx(dm.data.x),wz(dm.data.z)];
-      ctx.fillStyle='rgba(40,80,40,.6)';ctx.beginPath();ctx.arc(p[0],p[1],4,0,Math.PI*2);ctx.fill();
-      return;
-    }
-    var cur=i===curDel,p=[wx(dm.data.x),wz(dm.data.z)],pr=cur?8:5;
-    if(cur){ctx.fillStyle='rgba(255,220,30,.18)';ctx.beginPath();ctx.arc(p[0],p[1],14,0,Math.PI*2);ctx.fill();}
+    if(dm.done){ctx.fillStyle='rgba(40,80,40,.6)';ctx.beginPath();ctx.arc(wx(dm.data.x),wz(dm.data.z),3,0,Math.PI*2);ctx.fill();return;}
+    var cur=i===curDel,px2=wx(dm.data.x),pz2=wz(dm.data.z);
+    if(cur){ctx.fillStyle='rgba(255,220,30,.18)';ctx.beginPath();ctx.arc(px2,pz2,12,0,Math.PI*2);ctx.fill();}
     ctx.fillStyle=cur?'#ffee22':'rgba(200,145,20,.85)';
-    ctx.beginPath();ctx.arc(p[0],p[1],pr,0,Math.PI*2);ctx.fill();
-    if(cur){ctx.strokeStyle='rgba(255,230,40,.9)';ctx.lineWidth=2;ctx.stroke();}
+    ctx.beginPath();ctx.arc(px2,pz2,cur?7:4,0,Math.PI*2);ctx.fill();
     ctx.fillStyle=cur?'#111':'#222';ctx.font=(cur?'bold 8':'6')+'px monospace';
-    ctx.fillText(i+1,p[0],p[1]+(cur?3:2));
+    ctx.fillText(i+1,px2,pz2+(cur?3:2));
   });
   // Van blip
   var vx2=wx(van.x),vz2=wz(van.z);
   ctx.save();ctx.translate(vx2,vz2);ctx.rotate(-van.ang+Math.PI);
   ctx.fillStyle='#44ddff';ctx.strokeStyle='#1a7799';ctx.lineWidth=1.5;
-  ctx.beginPath();ctx.moveTo(0,-10);ctx.lineTo(6,6);ctx.lineTo(-6,6);ctx.closePath();ctx.fill();ctx.stroke();
+  ctx.beginPath();ctx.moveTo(0,-9);ctx.lineTo(5,5);ctx.lineTo(-5,5);ctx.closePath();ctx.fill();ctx.stroke();
   ctx.restore();
-  // Road name labels (matched to actual road coordinates)
-  ctx.textAlign='center';
-  // E-W roads — label placed along road, offset so it doesn't overlap district labels
-  [
-    ['MAIN ST',         0,    0, 'rgba(200,215,170,.65)', 6],
-    ['CENTER BLVD',   -100,  130,'rgba(180,200,150,.6)',  6],
-    ['HIGHWAY 1',      100,  265,'rgba(220,210,140,.7)',  7],
-    ['MIDLAND RD',    -150,  400,'rgba(175,195,145,.6)',  6],
-    ['TOWNSHIP RD',   -150,  535,'rgba(170,190,140,.6)',  6],
-    ['HQ ACCESS RD',  -175, -120,'rgba(160,180,200,.6)',  5],
-    ['FARM RD',         0,  660, 'rgba(150,180,130,.6)',  5],
-    ['WEST AVE',      -310,   68,'rgba(170,190,145,.55)', 5],
-    ['TRAILER PARK RD',-290,470,'rgba(175,160,130,.6)',  5],
-  ].forEach(function(r){
-    ctx.fillStyle=r[3];ctx.font=r[4]+'px Courier New';
-    ctx.fillText(r[0],wx(r[1]),wz(r[2])-3);
-  });
-  // N-S roads — rotate label 90deg and place along road
+  // Road labels (E-W horizontal)
+  // E-W road labels
+  var ewRoads=[
+    ['MAIN ST',0,0],['CENTER BLVD',-100,130],['HIGHWAY 1',100,265],
+    ['MIDLAND RD',-150,400],['TOWNSHIP RD',-150,535],['HQ ACCESS RD',-175,-120],
+    ['FARM RD',0,660],['WEST AVE',-310,68],['TRAILER PARK RD',-170,470],
+    ['FOREST LN',-420,712],['FARM TRACK',375,668]
+  ];
+  ctx.fillStyle='rgba(190,210,160,.6)';ctx.textAlign='center';ctx.font='6px Courier New';
+  ewRoads.forEach(function(r){ctx.fillText(r[0],wx(r[1]),wz(r[2])-3);});
+  // N-S road labels (rotated)
   var nsRoads=[
-    ['CENTRAL BLVD',   0,  420,'rgba(200,215,170,.65)', 6],
-    ['WEST BLVD',    -440, 200,'rgba(170,190,145,.6)',  5],
-    ['HARBOR ST',    -290,  80,'rgba(100,170,225,.65)', 5],
-    ['OLD TOWN AVE', -150,  80,'rgba(200,185,140,.6)',  5],
-    ['EAST ST',        80,  80,'rgba(175,195,150,.6)',  5],
-    ['SUBURB AVE',    200,  150,'rgba(175,195,150,.6)', 5],
-    ['RURAL RD',      360,  150,'rgba(170,190,140,.55)',5],
-    ['EAST BLVD',     460,  200,'rgba(170,190,145,.6)', 5],
-    ['DT LOOP',        10,   65,'rgba(175,195,150,.55)',5],
+    ['CENTRAL BLVD',0,350],['HARBOR ST',-290,80],['OLD TOWN AVE',-150,80],
+    ['EAST ST',80,80],['SUBURB AVE',200,150],['EAST BLVD',460,200],
+    ['WEST BLVD',-440,200],['RURAL RD',360,200],['DT LOOP',10,65],
+    ['FOREST TRAIL',-400,570],['FARM SPUR',455,630]
   ];
   nsRoads.forEach(function(r){
-    ctx.save();
-    ctx.translate(wx(r[1]),wz(r[2]));
-    ctx.rotate(-Math.PI/2);
-    ctx.fillStyle=r[3];ctx.font=r[4]+'px Courier New';ctx.textAlign='center';
-    ctx.fillText(r[0],0,0);
-    ctx.restore();
+    ctx.save();ctx.translate(wx(r[1]),wz(r[2]));ctx.rotate(-Math.PI/2);
+    ctx.fillStyle='rgba(190,210,160,.55)';ctx.font='5px Courier New';ctx.textAlign='center';
+    ctx.fillText(r[0],0,0);ctx.restore();
   });
   // District labels
   var districts=[
-    ['ARCTIC HQ',-325,-155,'rgba(140,200,255,.85)',true,10],
-    ['DOWNTOWN',10,80,'rgba(255,220,100,.8)',true,10],
-    ['OLD TOWN',-165,200,'rgba(210,185,140,.75)',false,8],
+    ['ARCTIC HQ',-325,-140,'rgba(140,200,255,.9)',true,10],
+    ['DOWNTOWN',10,60,'rgba(255,220,100,.85)',true,9],
+    ['OLD TOWN',-165,185,'rgba(210,185,140,.75)',false,8],
     ['SHOPPING',-340,200,'rgba(190,165,230,.75)',false,8],
-    ['E. SUBURBS',270,110,'rgba(180,225,150,.75)',false,8],
-    ['W. SUBURBS',-185,85,'rgba(180,225,150,.75)',false,8],
+    ['E. SUBURBS',270,100,'rgba(180,225,150,.75)',false,8],
+    ['W. SUBURBS',-185,75,'rgba(180,225,150,.75)',false,8],
     ['UNIVERSITY',30,385,'rgba(180,200,255,.75)',false,8],
-    ['APARTMENTS',195,350,'rgba(200,180,255,.75)',false,8],
-    ['HARBOR',-395,90,'rgba(100,170,230,.75)',false,8],
-    ['TRAIN STN',18,345,'rgba(200,185,145,.65)',false,7],
-    ['TRAILER PK',-310,468,'rgba(180,160,130,.65)',false,7],
-    ['RURAL TOWN',360,455,'rgba(180,225,150,.7)',false,7],
-    ['FARMLAND',380,640,'rgba(140,200,100,.7)',false,7],
-    ['FOREST',-380,640,'rgba(80,165,80,.7)',false,7],
-    ['N. HIGHWAY',0,265,'rgba(200,200,155,.6)',false,7],
+    ['APARTMENTS',195,345,'rgba(200,180,255,.75)',false,8],
+    ['HARBOR',-395,80,'rgba(100,170,230,.75)',false,8],
+    ['TRAIN STN',18,340,'rgba(200,185,145,.65)',false,7],
+    ['TRAILER PK',-310,465,'rgba(180,160,130,.65)',false,7],
+    ['RURAL TOWN',360,450,'rgba(180,225,150,.7)',false,7],
+    ['FARMLAND',380,635,'rgba(140,200,100,.7)',false,7],
+    ['FOREST',-380,635,'rgba(80,165,80,.7)',false,7]
   ];
   districts.forEach(function(d){
-    ctx.fillStyle=d[3];
-    ctx.font=(d[4]?'bold ':'')+d[5]+'px Courier New';
+    ctx.fillStyle=d[3];ctx.font=(d[4]?'bold ':'')+d[5]+'px Courier New';
     ctx.textAlign='center';ctx.fillText(d[0],wx(d[1]),wz(d[2]));
   });
 }
@@ -2342,7 +2366,8 @@ window.addEventListener('keydown',e=>{
 // ── MAIN LOOP ─────────────────────────────
 let last=0;
 function loop(ts){
-  requestAnimationFrame(loop);
+  window._cm=false;
+requestAnimationFrame(loop);
   if(paused){last=ts;return;}
   const dt=Math.min((ts-last)/1000,.05);last=ts;
   if(!loadoutActive){van.update(dt,keys);player.update(dt,keys);}
@@ -2354,7 +2379,7 @@ function loop(ts){
     dm.top.position.y=3.3+Math.sin(ts*.002)*.16;
     dm.top.rotation.y+=.013;
   }});
-  updHUD();updCargoView();updAmbientEvents(dt);
+  updHUD();updCargoView();updAmbientEvents(dt);try{updCrazy(dt);}catch(e){}
   drawMinimap(mmCtx,MMS,false);
   if(mapOpen)bigMapDraw();
   renderer.render(scene,camera);
